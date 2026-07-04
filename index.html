@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CosmoStars</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="icon" href="data:,">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a2e;
+            color: #ffffff;
+            min-height: 100vh;
+            padding-bottom: 70px;
+            overflow-x: hidden;
+        }
+        
+        .app-container { 
+            padding: 16px; 
+            padding-bottom: 80px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ===== ЗВЕЗДЫ НА ФОНЕ ===== */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .star-dot {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--d, 2s) ease-in-out infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1.5); }
+        }
+        
+        /* ===== ХЕДЕР ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .balance {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .free-spins {
+            font-size: 18px;
+            color: #00d4ff;
+        }
+        
+        /* ===== ЗАГОЛОВОК ===== */
+        .main-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .subtitle {
+            text-align: center;
+            opacity: 0.6;
+            font-size: 13px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ===== ВКЛАДКИ ===== */
+        .tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tab {
+            padding: 10px 4px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            text-align: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #888;
+        }
+        
+        .tab.active {
+            background: rgba(255,215,0,0.15);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+        
+        .tab:active { transform: scale(0.95); }
+        .tab .icon { font-size: 24px; display: block; margin-bottom: 2px; }
+        
+        /* ===== СТОРІНКИ ===== */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .page.active { display: block; }
+        
+        /* ===== КНОПКИ ІГОР ===== */
+        .game-btn {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-btn:active { 
+            transform: scale(0.97); 
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .game-btn .info { 
+            text-align: right; 
+            font-size: 12px; 
+            opacity: 0.7; 
+        }
+        
+        .game-btn .info .win { color: #ffd700; }
+        .game-btn .info .chance { color: #ff6b6b; }
+        
+        .game-btn.free-btn {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.1);
+        }
+        
+        /* ===== АНИМАЦИЯ СЛОТА ===== */
+        .slot-machine {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        
+        .slot-reels {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            font-size: 48px;
+            margin: 10px 0;
+        }
+        
+        .slot-reel {
+            width: 60px;
+            height: 70px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            transition: all 0.1s;
+        }
+        
+        .slot-reel.spinning {
+            animation: spinReel 0.1s infinite;
+        }
+        
+        @keyframes spinReel {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); }
+        }
+        
+        /* ===== КУБИК ===== */
+        .dice-display {
+            font-size: 80px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            min-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dice-display.rolling {
+            animation: rollDice 0.1s infinite;
+        }
+        
+        @keyframes rollDice {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(90deg) scale(1.1); }
+            50% { transform: rotate(180deg) scale(1); }
+            75% { transform: rotate(270deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        /* ===== КОЛЕСО ФОРТУНИ ===== */
+        .wheel-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 16px;
+        }
+        
+        .wheel {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            border: 4px solid #ffd700;
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+        
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            z-index: 2;
+        }
+        
+        /* ===== ПИТОМЦЫ ===== */
+        .pet-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.15s;
+        }
+        
+        .pet-card:active { transform: scale(0.97); }
+        
+        .pet-card .pet-info .pet-name { font-size: 16px; font-weight: 600; }
+        .pet-card .pet-info .pet-bonus { font-size: 12px; opacity: 0.7; }
+        
+        .pet-card .buy-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .pet-card .buy-btn:active { transform: scale(0.95); }
+        .pet-card .owned { color: #00d4ff; font-size: 14px; font-weight: 600; }
+        
+        /* ===== РЕЗУЛЬТАТ ===== */
+        .result-box {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-box.show { display: block; }
+        .result-box .win-text { color: #ffd700; font-size: 22px; font-weight: bold; }
+        .result-box .lose-text { color: #ff6b6b; font-size: 22px; font-weight: bold; }
+        .result-box .amount { font-size: 32px; font-weight: bold; margin: 8px 0; }
+        .result-box .bonus-text { font-size: 14px; opacity: 0.7; }
+        
+        /* ===== СТАТИСТИКА ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-item .value { font-size: 20px; font-weight: bold; color: #ffd700; }
+        .stat-item .label { font-size: 11px; opacity: 0.6; margin-top: 2px; }
+        
+        /* ===== ПРОМОКОД ===== */
+        .promo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .promo-input-group input {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .promo-input-group input:focus {
+            border-color: #ffd700;
+        }
+        
+        .promo-input-group button {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .promo-input-group button:active { transform: scale(0.95); }
+        
+        /* ===== ЕЖЕДНЕВНЫЙ БОНУС ===== */
+        .daily-card {
+            background: rgba(255,215,0,0.05);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .daily-card .day { font-size: 48px; margin-bottom: 8px; }
+        .daily-card .streak { color: #ffd700; font-size: 18px; font-weight: bold; }
+        .daily-card .reward { font-size: 24px; font-weight: bold; margin: 8px 0; }
+        
+        .daily-btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            background: #ffd700;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .daily-btn:active { transform: scale(0.95); }
+        .daily-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        /* ===== НИЖНЯ НАВІГАЦІЯ ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 16px 20px;
+            background: rgba(10, 10, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 0.5px solid rgba(255,255,255,0.1);
+            z-index: 100;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: transparent;
+            color: #666;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            background: rgba(255,215,0,0.15);
+            color: #ffd700;
+        }
+        
+        .nav-item:active { transform: scale(0.95); }
+        .nav-icon { font-size: 22px; }
+        .nav-label { font-size: 10px; font-weight: 600; }
+        
+        /* ===== ЗАВАНТАЖЕННЯ ===== */
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        #splash .logo {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        #splash .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,215,0,0.1);
+            border-top: 3px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* ===== БОНУС ДИСПЛЕЙ ===== */
+        .bonus-display {
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 8px;
+        }
+        
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 400px) {
+            .tab { font-size: 10px; padding: 8px 2px; }
+            .tab .icon { font-size: 20px; }
+            .game-btn { font-size: 13px; padding: 12px 14px; }
+            .slot-reel { width: 50px; height: 60px; font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Заставка -->
+    <div id="splash">
+        <div class="logo">🌌 CosmoStars</div>
+        <div class="loader"></div>
+        <div style="opacity:0.5;font-size:14px;">Загрузка...</div>
+    </div>
+    
+    <!-- Звезды на фоне -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <!-- Головний додаток -->
+    <div id="app" style="display:none;">
+        <div class="app-container">
+            <!-- Хедер -->
+            <div class="header">
+                <div class="balance">⭐ <span id="balance">0</span></div>
+                <div class="free-spins">🎰 <span id="free-spins">0</span></div>
+            </div>
+            
+            <div class="main-title">🌌 CosmoStars</div>
+            <div class="subtitle">Космические выигрыши ждут!</div>
+            
+            <!-- Вкладки -->
+            <div class="tabs">
+                <div class="tab active" data-tab="slots"><span class="icon">🎰</span>Слоты</div>
+                <div class="tab" data-tab="dice"><span class="icon">🎲</span>Кубик</div>
+                <div class="tab" data-tab="wheel"><span class="icon">🎡</span>Колесо</div>
+                <div class="tab" data-tab="pets"><span class="icon">🐾</span>Питомцы</div>
+            </div>
+            
+            <!-- ===== СТОРІНКА СЛОТИ ===== -->
+            <div class="page active" id="page-slots">
+                <!-- Слот-машина -->
+                <div class="slot-machine" id="slotMachine">
+                    <div class="slot-reels" id="slotReels">
+                        <div class="slot-reel" id="reel1">🍒</div>
+                        <div class="slot-reel" id="reel2">🍋</div>
+                        <div class="slot-reel" id="reel3">🍊</div>
+                    </div>
+                    <div id="slotStatus" style="font-size:14px;opacity:0.7;">Нажмите кнопку ниже</div>
+                </div>
+                
+                <button class="game-btn" data-game="slot" data-bet="25">
+                    🟢 Мини
+                    <span class="info">25⭐ <span class="win">| 1-5⭐</span> <span class="chance">| 5%</span></span>
+                </button>
+                <button class="game-btn" data-game="slot" data-bet="50">
+                    🔵 Стандарт
+                    <span class="info">50⭐ <span class="win">| 2-10⭐</span> <span class="chance">| 3%</span></span>
+                </button>
+                <button class="game-btn" data-game="slot" data-bet="100">
+                    🟣 Премиум
+                    <span class="info">100⭐ <span class="win">| 5-25⭐</span> <span class="chance">| 1%</span></span>
+                </button>
+                <button class="game-btn free-btn" id="freeSpinBtn">
+                    🎁 Бесплатное вращение
+                    <span class="info" id="freeCount">(0)</span>
+                </button>
+            </div>
+            
+            <!-- ===== СТОРІНКА КУБИК ===== -->
+            <div class="page" id="page-dice">
+                <div class="dice-display" id="diceDisplay">⚀</div>
+                
+                <button class="game-btn" data-game="dice" data-bet="10">
+                    🎲 Простой
+                    <span class="info">10⭐ <span class="win">| x0-x5</span></span>
+                </button>
+                <button class="game-btn" data-game="dice" data-bet="25">
+                    🎲 Стандарт
+                    <span class="info">25⭐ <span class="win">| x0.5-x5</span></span>
+                </button>
+                <button class="game-btn" data-game="dice" data-bet="50">
+                    🎲 Высокий риск
+                    <span class="info">50⭐ <span class="win">| x1-x5</span></span>
+                </button>
+            </div>
+            
+            <!-- ===== СТОРІНКА КОЛЕСО ===== -->
+            <div class="page" id="page-wheel">
+                <div class="wheel-container" id="wheelContainer">
+                    <div class="wheel-pointer">▼</div>
+                    <div class="wheel" id="wheel"></div>
+                </div>
+                <div style="text-align:center;font-size:14px;opacity:0.7;margin-bottom:12px;" id="wheelResult">Нажмите кнопку ниже</div>
+                
+                <button class="game-btn" data-game="wheel" data-bet="10">
+                    🎡 Колесо
+                    <span class="info">10⭐ <span class="win">| 0-10⭐</span></span>
+                </button>
+                <button class="game-btn" data-game="wheel" data-bet="25">
+                    🎡 Колесо
+                    <span class="info">25⭐ <span class="win">| 0-20⭐</span></span>
+                </button>
+                <button class="game-btn" data-game="wheel" data-bet="50">
+                    🎡 Колесо
+                    <span class="info">50⭐ <span class="win">| 0-50⭐</span></span>
+                </button>
+            </div>
+            
+            <!-- ===== СТОРІНКА ПИТОМЦЫ ===== -->
+            <div class="page" id="page-pets">
+                <div id="petsList"></div>
+                <div class="bonus-display" id="bonusDisplay">🐾 Бонус: +0%</div>
+            </div>
+            
+            <!-- ===== РЕЗУЛЬТАТ ===== -->
+            <div class="result-box" id="resultBox">
+                <div id="resultContent"></div>
+            </div>
+            
+            <!-- ===== СТАТИСТИКА ===== -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="value" id="statGames">0</div>
+                    <div class="label">Игр</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="statWin">0⭐</div>
+                    <div class="label">Выиграно</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="statPets">0</div>
+                    <div class="label">Питомцы</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Нижня навігація -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="game"><div class="nav-icon">🎮</div><div class="nav-label">Игра</div></div>
+        <div class="nav-item" data-page="promo"><div class="nav-icon">🏷️</div><div class="nav-label">Промокод</div></div>
+        <div class="nav-item" data-page="daily"><div class="nav-icon">🎁</div><div class="nav-label">Бонус</div></div>
+        <div class="nav-item" data-page="profile"><div class="nav-icon">👤</div><div class="nav-label">Профиль</div></div>
+    </div>
+    
+    <!-- ===== СТОРІНКИ НАВІГАЦІЇ ===== -->
+    <div id="page-promo" style="display:none;padding:16px;padding-bottom:80px;">
+        <h2 style="margin-bottom:16px;">🏷️ Промокод</h2>
+        <div class="promo-input-group">
+            <input type="text" id="promoInput" placeholder="Введите промокод">
+            <button onclick="usePromo()">Активировать</button>
+        </div>
+        <div id="promoResult" style="text-align:center;padding:16px;"></div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-top:12px;">
+            <div style="font-weight:600;margin-bottom:8px;">🔥 Доступные промокоды:</div>
+            <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>ENJOY</span>
+                <span style="color:#ffd700;">5 бесплатных вращений</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="page-daily" style="display:none;padding:16px;padding-bottom:80px;">
+        <h2 style="margin-bottom:16px;">🎁 Ежедневный бонус</h2>
+        <div class="daily-card">
+            <div class="day">📅</div>
+            <div class="streak" id="dailyStreak">🔥 Стрик: 0 дней</div>
+            <div class="reward" id="dailyReward">🎁 Бонус: 10⭐</div>
+            <button class="daily-btn" id="dailyBtn" onclick="claimDaily()">Забрать бонус</button>
+            <div id="dailyStatus" style="margin-top:8px;font-size:13px;opacity:0.6;"></div>
+        </div>
+    </div>
+    
+    <div id="page-profile" style="display:none;padding:16px;padding-bottom:80px;">
+        <h2 style="margin-bottom:16px;">👤 Профиль</h2>
+        <div style="background:rgba(255,255,255,0.05);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;">
+            <div style="font-size:48px;margin-bottom:8px;">👤</div>
+            <div style="font-size:20px;font-weight:600;" id="profileName">Игрок</div>
+            <div style="font-size:14px;opacity:0.6;margin-top:4px;" id="profileId">ID: 0</div>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:bold;color:#ffd700;" id="profileBalance">0⭐</div>
+                <div style="font-size:11px;opacity:0.6;">Баланс</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:bold;color:#00d4ff;" id="profileSpins">0</div>
+                <div style="font-size:11px;opacity:0.6;">Вращений</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:20px;font-weight:bold;color:#ffd700;" id="profileBonus">+0%</div>
+                <div style="font-size:11px;opacity:0.6;">Бонус</div>
+            </div>
+        </div>
+        
+        <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>🎮 Игр сыграно</span>
+                <span id="profileGames">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>💰 Всего выиграно</span>
+                <span id="profileTotalWin">0⭐</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                <span>🐾 Питомцев</span>
+                <span id="profilePets">0</span>
+            </div>
+        </div>
+        
+        <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;">
+            <div style="font-weight:600;margin-bottom:8px;">👥 Рефералы</div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                <span>Приглашено друзей</span>
+                <span id="profileRefs">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <span>Заработано</span>
+                <span id="profileRefBonus">0⭐</span>
+            </div>
+            <div style="margin-top:12px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;font-size:12px;opacity:0.7;">
+                📤 Твоя ссылка: <span id="profileRefLink" style="color:#ffd700;word-break:break-all;">Загрузка...</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        // ===== КОНФИГ =====
+        const SUPABASE_URL = 'https://your-project.supabase.co';  // ЗАМЕНИТЕ
+        const SUPABASE_KEY = 'your-anon-key';  // ЗАМЕНИТЕ
+        const BOT_USERNAME = 'CosmoStarsBot';
+        
+        // ===== СОСТОЯНИЕ =====
+        let state = {
+            user: null,
+            balance: 0,
+            freeSpins: 5,
+            pets: [],
+            petBonus: 0,
+            totalGames: 0,
+            totalWin: 0,
+            dailyStreak: 0,
+            dailyAvailable: true,
+            referrals: 0,
+            refBonus: 0,
+            currentTab: 'slots'
+        };
+        
+        let userData = {};
+        let isSpinning = false;
+        
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('user_id');
+        const ref = urlParams.get('ref');
+        
+        console.log('📱 User ID:', userId);
+        console.log('🔗 Referral:', ref);
+        
+        // Создаем звезды на фоне
+        function createStars() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-dot';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.setProperty('--d', (2 + Math.random() * 3) + 's');
+                star.style.width = (1 + Math.random() * 2) + 'px';
+                star.style.height = star.style.width;
+                container.appendChild(star);
+            }
+        }
+        createStars();
+        
+        // ===== API ЗАПРОСЫ =====
+        async function apiRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+                    ...options,
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                if (response.status === 204) return [];
+                const text = await response.text();
+                if (text && text.length > 0) {
+                    try { return JSON.parse(text); }
+                    catch(e) { return []; }
+                }
+                return [];
+            } catch(e) { console.error('API Error:', e); return []; }
+        }
+        
+        // ===== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ =====
+        async function loadUser() {
+            if (!userId) {
+                showToast('❌ Ошибка: ID пользователя не найден', true);
+                return;
+            }
+            
+            let users = await apiRequest(`users?user_id=eq.${userId}&select=*`);
+            
+            if (!users || users.length === 0) {
+                // Создаем нового пользователя
+                await apiRequest('users', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        user_id: parseInt(userId),
+                        balance: 0,
+                        free_spins: 5,
+                        pets: [],
+                        total_games: 0,
+                        total_win: 0
+                    })
+                });
+                
+                // Если есть реферал
+                if (ref && ref !== userId) {
+                    await apiRequest('referrals', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            referrer_id: parseInt(ref),
+                            referred_id: parseInt(userId)
+                        })
+                    });
+                    // Начисляем бонус рефереру
+                    const refUser = await apiRequest(`users?user_id=eq.${ref}&select=*`);
+                    if (refUser && refUser.length > 0) {
+                        await apiRequest(`users?user_id=eq.${ref}`, {
+                            method: 'PATCH',
+                            body: JSON.stringify({
+                                balance: refUser[0].balance + 50
+                            })
+                        });
+                    }
+                }
+                
+                users = await apiRequest(`users?user_id=eq.${userId}&select=*`);
+            }
+            
+            if (users && users.length > 0) {
+                const u = users[0];
+                state.user = u;
+                state.balance = u.balance || 0;
+                state.freeSpins = u.free_spins || 5;
+                state.pets = u.pets || [];
+                state.petBonus = calculatePetBonus(state.pets);
+                state.totalGames = u.total_games || 0;
+                state.totalWin = u.total_win || 0;
+                
+                // Загружаем рефералов
+                const refs = await apiRequest(`referrals?referrer_id=eq.${userId}&select=*`);
+                state.referrals = refs ? refs.length : 0;
+                state.refBonus = state.referrals * 50;
+                
+                // Загружаем ежедневный бонус
+                const daily = await apiRequest(`daily_bonus?user_id=eq.${userId}&select=*`);
+                if (daily && daily.length > 0) {
+                    state.dailyStreak = daily[0].streak || 0;
+                    const lastClaim = new Date(daily[0].last_claim);
+                    const now = new Date();
+                    state.dailyAvailable = (now - lastClaim) > 24 * 60 * 60 * 1000;
+                } else {
+                    state.dailyStreak = 0;
+                    state.dailyAvailable = true;
+                }
+                
+                updateUI();
+                return u;
+            }
+            return null;
+        }
+        
+        // ===== РАСЧЕТ БОНУСА ПИТОМЦЕВ =====
+        function calculatePetBonus(pets) {
+            const petData = {
+                '🐹 Метеоритный Хомяк': 12,
+                '🌈 Кометный Единорог': 18,
+                '🐙 Космо-Осьминог': 25,
+                '🐉 Звездный Дракон': 35
+            };
+            let bonus = 0;
+            if (Array.isArray(pets)) {
+                pets.forEach(p => {
+                    if (petData[p]) bonus += petData[p];
+                });
+            }
+            return Math.min(bonus, 70);
+        }
+        
+        // ===== ОБНОВЛЕНИЕ UI =====
+        function updateUI() {
+            document.getElementById('balance').textContent = state.balance;
+            document.getElementById('free-spins').textContent = state.freeSpins;
+            document.getElementById('freeCount').textContent = `(${state.freeSpins})`;
+            document.getElementById('statGames').textContent = state.totalGames;
+            document.getElementById('statWin').textContent = state.totalWin + '⭐';
+            document.getElementById('statPets').textContent = state.pets.length;
+            
+            // Профиль
+            document.getElementById('profileName').textContent = 'Игрок';
+            document.getElementById('profileId').textContent = `ID: ${userId}`;
+            document.getElementById('profileBalance').textContent = state.balance + '⭐';
+            document.getElementById('profileSpins').textContent = state.freeSpins;
+            document.getElementById('profileBonus').textContent = '+' + state.petBonus + '%';
+            document.getElementById('profileGames').textContent = state.totalGames;
+            document.getElementById('profileTotalWin').textContent = state.totalWin + '⭐';
+            document.getElementById('profilePets').textContent = state.pets.length;
+            document.getElementById('profileRefs').textContent = state.referrals;
+            document.getElementById('profileRefBonus').textContent = state.refBonus + '⭐';
+            document.getElementById('profileRefLink').textContent = `https://t.me/${BOT_USERNAME}?start=${userId}`;
+            
+            // Ежедневный бонус
+            document.getElementById('dailyStreak').textContent = `🔥 Стрик: ${state.dailyStreak} дней`;
+            const reward = 10 * (state.dailyStreak + 1);
+            document.getElementById('dailyReward').textContent = `🎁 Бонус: ${Math.min(reward, 100)}⭐`;
+            document.getElementById('dailyBtn').disabled = !state.dailyAvailable;
+            document.getElementById('dailyStatus').textContent = state.dailyAvailable ? '✅ Доступен!' : '⏳ Доступен через 24 часа';
+            
+            // Питомцы
+            renderPets();
+            
+            // Кнопка бесплатного вращения
+            document.getElementById('freeSpinBtn').disabled = state.freeSpins <= 0;
+        }
+        
+        // ===== РЕНДЕР ПИТОМЦЕВ =====
+        function renderPets() {
+            const container = document.getElementById('petsList');
+            const allPets = [
+                { name: '🐹 Метеоритный Хомяк', price: 320, bonus: 12 },
+                { name: '🌈 Кометный Единорог', price: 480, bonus: 18 },
+                { name: '🐙 Космо-Осьминог', price: 640, bonus: 25 },
+                { name: '🐉 Звездный Дракон', price: 800, bonus: 35 }
+            ];
+            
+            container.innerHTML = allPets.map(pet => {
+                const owned = state.pets.includes(pet.name);
+                return `
+                    <div class="pet-card">
+                        <div class="pet-info">
+                            <div class="pet-name">${pet.name}</div>
+                            <div class="pet-bonus">+${pet.bonus}% к выигрышам</div>
+                        </div>
+                        ${owned ? 
+                            '<span class="owned">✅ Куплен</span>' :
+                            `<button class="buy-btn" onclick="buyPet('${pet.name}')">${pet.price}⭐</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('bonusDisplay').textContent = `🐾 Бонус: +${state.petBonus}%`;
+        }
+        
+        // ===== ПОКАЗ РЕЗУЛЬТАТА =====
+        function showResult(emoji, status, amount, bonus = 0) {
+            const box = document.getElementById('resultBox');
+            const content = document.getElementById('resultContent');
+            const isWin = status.includes('ВЫИГРЫШ');
+            
+            content.innerHTML = `
+                <div style="font-size:48px;margin-bottom:8px;">${emoji}</div>
+                <div class="${isWin ? 'win-text' : 'lose-text'}">${status}</div>
+                ${amount ? `<div class="amount">${amount}</div>` : ''}
+                ${bonus > 0 ? `<div class="bonus-text">🐾 Бонус: +${bonus}%</div>` : ''}
+            `;
+            
+            box.classList.add('show');
+            setTimeout(() => box.classList.remove('show'), 5000);
+        }
+        
+        // ===== TOAST СООБЩЕНИЯ =====
+        function showToast(text, isError = false) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${isError ? '#dc3545' : '#2aab6e'};
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 30px;
+                z-index: 1000;
+                font-size: 14px;
+                white-space: nowrap;
+                max-width: 90%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                animation: fadeIn 0.3s ease;
+            `;
+            toast.textContent = text;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+        
+        // ===== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК =====
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const page = this.dataset.tab;
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById('page-' + page).classList.add('active');
+                state.currentTab = page;
+            });
+        });
+        
+        // ===== НАВИГАЦИЯ =====
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+                
+                const page = this.dataset.page;
+                // Скрываем все страницы
+                document.getElementById('app').style.display = page === 'game' ? 'block' : 'none';
+                document.getElementById('page-promo').style.display = page === 'promo' ? 'block' : 'none';
+                document.getElementById('page-daily').style.display = page === 'daily' ? 'block' : 'none';
+                document.getElementById('page-profile').style.display = page === 'profile' ? 'block' : 'none';
+            });
+        });
+        
+        // ===== ИГРА В СЛОТ =====
+        async function playSlot(bet) {
+            if (isSpinning) return;
+            
+            // Проверяем бесплатные вращения
+            const isFree = state.freeSpins > 0 && bet <= 25;
+            
+            if (!isFree) {
+                // Создаем платеж через Telegram
+                tg.sendData(JSON.stringify({
+                    action: 'play',
+                    game: 'slot',
+                    bet: bet
+                }));
+                return;
+            }
+            
+            isSpinning = true;
+            const reelEmojis = ['🍒', '🍋', '🍊', '🍇', '🍉', '🍓', '💎', '🌟'];
+            
+            // Анимация
+            const reels = ['reel1', 'reel2', 'reel3'];
+            let interval = setInterval(() => {
+                reels.forEach(id => {
+                    document.getElementById(id).textContent = reelEmojis[Math.floor(Math.random() * reelEmojis.length)];
+                });
+            }, 100);
+            
+            // Результат (минимальный шанс)
+            const chance = bet === 25 ? 0.05 : bet === 50 ? 0.03 : 0.01;
+            let win = 0;
+            const isWin = Math.random() < chance;
+            
+            if (isWin) {
+                const minWin = bet === 25 ? 1 : bet === 50 ? 2 : 5;
+                const maxWin = bet === 25 ? 5 : bet === 50 ? 10 : 25;
+                win = Math.floor(Math.random() * (maxWin - minWin + 1)) + minWin;
+                // Бонус от питомцев
+                win = Math.floor(win * (1 + state.petBonus / 100));
+            }
+            
+            // Обновляем баланс
+            if (win > 0) {
+                state.balance += win;
+                state.totalWin += win;
+            }
+            state.totalGames += 1;
+            if (isFree) state.freeSpins -= 1;
+            
+            // Сохраняем в БД
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance,
+                    free_spins: state.freeSpins,
+                    total_games: state.totalGames,
+                    total_win: state.totalWin
+                })
+            });
+            
+            // Добавляем историю
+            await apiRequest('game_history', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    game_type: 'slot',
+                    bet: bet,
+                    win: win,
+                    is_free: isFree
+                })
+            });
+            
+            // Останавливаем анимацию
+            setTimeout(() => {
+                clearInterval(interval);
+                const finalEmojis = [
+                    reelEmojis[Math.floor(Math.random() * reelEmojis.length)],
+                    reelEmojis[Math.floor(Math.random() * reelEmojis.length)],
+                    reelEmojis[Math.floor(Math.random() * reelEmojis.length)]
+                ];
+                reels.forEach((id, i) => {
+                    document.getElementById(id).textContent = finalEmojis[i];
+                });
+                
+                document.getElementById('slotStatus').textContent = win > 0 ? '🎉 ПОБЕДА!' : '😢 ПРОИГРЫШ';
+                
+                isSpinning = false;
+                updateUI();
+                
+                if (win > 0) {
+                    showResult('🎉', 'ВЫИГРЫШ!', `+${win}⭐`, state.petBonus);
+                } else {
+                    showResult('😢', 'ПРОИГРЫШ', `0⭐`, state.petBonus);
+                }
+            }, 2000);
+        }
+        
+        // ===== ИГРА В КУБИК =====
+        async function playDice(bet) {
+            if (isSpinning) return;
+            
+            tg.sendData(JSON.stringify({
+                action: 'play',
+                game: 'dice',
+                bet: bet
+            }));
+        }
+        
+        // ===== ИГРА В КОЛЕСО =====
+        async function playWheel(bet) {
+            if (isSpinning) return;
+            
+            tg.sendData(JSON.stringify({
+                action: 'play',
+                game: 'wheel',
+                bet: bet
+            }));
+        }
+        
+        // ===== БЕСПЛАТНОЕ ВРАЩЕНИЕ =====
+        async function playFreeSpin() {
+            if (state.freeSpins <= 0) {
+                showToast('❌ Нет бесплатных вращений', true);
+                return;
+            }
+            await playSlot(25);
+        }
+        
+        // ===== ПОКУПКА ПИТОМЦА =====
+        async function buyPet(petName) {
+            const petData = {
+                '🐹 Метеоритный Хомяк': { price: 320, bonus: 12 },
+                '🌈 Кометный Единорог': { price: 480, bonus: 18 },
+                '🐙 Космо-Осьминог': { price: 640, bonus: 25 },
+                '🐉 Звездный Дракон': { price: 800, bonus: 35 }
+            };
+            
+            const pet = petData[petName];
+            if (!pet) return;
+            
+            if (state.balance < pet.price) {
+                showToast('❌ Недостаточно звезд', true);
+                return;
+            }
+            
+            if (state.pets.includes(petName)) {
+                showToast('❌ У вас уже есть этот питомец', true);
+                return;
+            }
+            
+            state.balance -= pet.price;
+            state.pets.push(petName);
+            state.petBonus = calculatePetBonus(state.pets);
+            
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance,
+                    pets: state.pets
+                })
+            });
+            
+            updateUI();
+            showToast(`✅ Куплен ${petName}! +${pet.bonus}% к выигрышам`);
+        }
+        
+        // ===== ЕЖЕДНЕВНЫЙ БОНУС =====
+        async function claimDaily() {
+            if (!state.dailyAvailable) {
+                showToast('⏳ Бонус уже получен сегодня', true);
+                return;
+            }
+            
+            const reward = Math.min(10 * (state.dailyStreak + 1), 100);
+            state.balance += reward;
+            state.dailyStreak += 1;
+            state.dailyAvailable = false;
+            
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance
+                })
+            });
+            
+            await apiRequest('daily_bonus', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    streak: state.dailyStreak,
+                    last_claim: new Date().toISOString()
+                })
+            });
+            
+            updateUI();
+            showToast(`🎁 Получено ${reward}⭐! Стрик: ${state.dailyStreak} дней`);
+        }
+        
+        // ===== ПРОМОКОД =====
+        async function usePromo() {
+            const input = document.getElementById('promoInput');
+            const code = input.value.trim().toUpperCase();
+            const resultDiv = document.getElementById('promoResult');
+            
+            if (!code) {
+                resultDiv.innerHTML = '<span style="color:#ff6b6b;">❌ Введите промокод</span>';
+                return;
+            }
+            
+            // Проверяем промокод
+            const promo = await apiRequest(`promo_codes?code=eq.${code}&select=*`);
+            
+            if (!promo || promo.length === 0) {
+                resultDiv.innerHTML = '<span style="color:#ff6b6b;">❌ Промокод не найден</span>';
+                return;
+            }
+            
+            const p = promo[0];
+            
+            // Проверяем использование
+            const usage = await apiRequest(`promo_usage?user_id=eq.${userId}&promo_code=eq.${code}&select=*`);
+            if (usage && usage.length > 0) {
+                resultDiv.innerHTML = '<span style="color:#ff6b6b;">❌ Вы уже использовали этот промокод</span>';
+                return;
+            }
+            
+            // Начисляем бонус
+            if (p.reward_type === 'free_spins') {
+                state.freeSpins += p.reward_value;
+                await apiRequest(`users?user_id=eq.${userId}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        free_spins: state.freeSpins
+                    })
+                });
+            }
+            
+            // Записываем использование
+            await apiRequest('promo_usage', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    promo_code: code
+                })
+            });
+            
+            // Обновляем счетчик использований
+            await apiRequest(`promo_codes?code=eq.${code}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    uses: p.uses + 1
+                })
+            });
+            
+            resultDiv.innerHTML = `<span style="color:#ffd700;">✅ Получено ${p.reward_value} бесплатных вращений!</span>`;
+            input.value = '';
+            updateUI();
+            showToast(`🎁 Промокод активирован! +${p.reward_value} вращений`);
+        }
+        
+        // ===== ОБРАБОТКА ПЛАТЕЖЕЙ =====
+        tg.onEvent('invoiceClosed', async (invoice) => {
+            if (invoice.status === 'paid') {
+                const payload = JSON.parse(invoice.payload || '{}');
+                const game = payload.game || 'slot';
+                const bet = payload.bet || 25;
+                
+                showToast('⏳ Обработка платежа...');
+                
+                // Выполняем игру
+                if (game === 'slot') {
+                    await playSlotFromPayment(bet);
+                } else if (game === 'dice') {
+                    await playDiceFromPayment(bet);
+                } else if (game === 'wheel') {
+                    await playWheelFromPayment(bet);
+                }
+            } else {
+                showToast('❌ Платеж отменен', true);
+            }
+        });
+        
+        async function playSlotFromPayment(bet) {
+            // Аналогично playSlot, но без проверки бесплатных вращений
+            const chance = bet === 25 ? 0.05 : bet === 50 ? 0.03 : 0.01;
+            let win = 0;
+            const isWin = Math.random() < chance;
+            
+            if (isWin) {
+                const minWin = bet === 25 ? 1 : bet === 50 ? 2 : 5;
+                const maxWin = bet === 25 ? 5 : bet === 50 ? 10 : 25;
+                win = Math.floor(Math.random() * (maxWin - minWin + 1)) + minWin;
+                win = Math.floor(win * (1 + state.petBonus / 100));
+            }
+            
+            if (win > 0) {
+                state.balance += win;
+                state.totalWin += win;
+            }
+            state.totalGames += 1;
+            
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance,
+                    total_games: state.totalGames,
+                    total_win: state.totalWin
+                })
+            });
+            
+            await apiRequest('game_history', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    game_type: 'slot',
+                    bet: bet,
+                    win: win,
+                    is_free: false
+                })
+            });
+            
+            updateUI();
+            
+            if (win > 0) {
+                showResult('🎉', 'ВЫИГРЫШ!', `+${win}⭐`, state.petBonus);
+            } else {
+                showResult('😢', 'ПРОИГРЫШ', `0⭐`, state.petBonus);
+            }
+        }
+        
+        async function playDiceFromPayment(bet) {
+            const diceEmojis = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+            const multipliers = bet === 10 ? [0, 0.5, 1, 2, 3, 5] : 
+                               bet === 25 ? [0.5, 1, 1.5, 2, 3, 5] : 
+                               [1, 1.5, 2, 3, 4, 5];
+            
+            const value = Math.floor(Math.random() * 6);
+            const multiplier = multipliers[value];
+            let win = Math.floor(bet * multiplier);
+            
+            if (win > 0) {
+                win = Math.floor(win * (1 + state.petBonus / 100));
+                state.balance += win;
+                state.totalWin += win;
+            }
+            state.totalGames += 1;
+            
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance,
+                    total_games: state.totalGames,
+                    total_win: state.totalWin
+                })
+            });
+            
+            await apiRequest('game_history', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    game_type: 'dice',
+                    bet: bet,
+                    win: win,
+                    is_free: false
+                })
+            });
+            
+            document.getElementById('diceDisplay').textContent = diceEmojis[value];
+            
+            updateUI();
+            
+            if (win > 0) {
+                showResult('🎉', 'ВЫИГРЫШ!', `+${win}⭐`, state.petBonus);
+            } else {
+                showResult('😢', 'ПРОИГРЫШ', `0⭐`, state.petBonus);
+            }
+        }
+        
+        async function playWheelFromPayment(bet) {
+            const segments = bet === 10 ? [0, 0, 0, 1, 2, 3, 5, 10] :
+                           bet === 25 ? [0, 0, 1, 2, 3, 5, 10, 20] :
+                           [0, 1, 2, 3, 5, 10, 20, 50];
+            
+            let win = segments[Math.floor(Math.random() * segments.length)];
+            
+            if (win > 0) {
+                win = Math.floor(win * (1 + state.petBonus / 100));
+                state.balance += win;
+                state.totalWin += win;
+            }
+            state.totalGames += 1;
+            
+            await apiRequest(`users?user_id=eq.${userId}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    balance: state.balance,
+                    total_games: state.totalGames,
+                    total_win: state.totalWin
+                })
+            });
+            
+            await apiRequest('game_history', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: parseInt(userId),
+                    game_type: 'wheel',
+                    bet: bet,
+                    win: win,
+                    is_free: false
+                })
+            });
+            
+            document.getElementById('wheelResult').textContent = win > 0 ? `🎉 Выпало: ${win}⭐` : '😢 0⭐';
+            
+            updateUI();
+            
+            if (win > 0) {
+                showResult('🎉', 'ВЫИГРЫШ!', `+${win}⭐`, state.petBonus);
+            } else {
+                showResult('😢', 'ПРОИГРЫШ', `0⭐`, state.petBonus);
+            }
+        }
+        
+        // ===== ОБРАБОТКА КНОПОК ИГР =====
+        document.querySelectorAll('.game-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const game = this.dataset.game;
+                const bet = parseInt(this.dataset.bet);
+                
+                if (game === 'slot') playSlot(bet);
+                else if (game === 'dice') playDice(bet);
+                else if (game === 'wheel') playWheel(bet);
+            });
+        });
+        
+        document.getElementById('freeSpinBtn').addEventListener('click', playFreeSpin);
+        
+        // ===== ЗАПУСК =====
+        async function init() {
+            await loadUser();
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }
+        
+        // Добавляем обработку данных от бота
+        window.addEventListener('message', (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.type === 'payment_success') {
+                    showToast('✅ Платеж успешен!');
+                    loadUser();
+                }
+            } catch(e) {}
+        });
+        
+        init();
+    </script>
+</body>
+</html>
