@@ -1,0 +1,314 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, sans-serif;
+    background: #0a0a2e;
+    color: #fff;
+    min-height: 100vh;
+    padding-bottom: 70px;
+}
+
+.container { max-width: 400px; margin: 0 auto; padding: 16px; }
+
+/* Хедер */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    margin-bottom: 16px;
+}
+.balance { font-size: 22px; font-weight: bold; color: #ffd700; }
+.free-spins { font-size: 18px; color: #00d4ff; }
+
+/* Вкладки */
+.tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+}
+.tab {
+    padding: 10px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #888;
+    transition: all 0.3s;
+}
+.tab.active {
+    background: rgba(255,215,0,0.15);
+    color: #ffd700;
+    border: 1px solid #ffd700;
+}
+.tab:active { transform: scale(0.95); }
+
+/* Сторінки */
+.page { display: none; animation: fadeIn 0.3s; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Слот-машина */
+#slot-machine {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+.reels {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 48px;
+    margin: 10px 0;
+}
+.reel {
+    width: 60px;
+    height: 70px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.reel.spinning { animation: spin 0.1s infinite; }
+@keyframes spin { 0% { transform: translateY(0); } 100% { transform: translateY(-5px); } }
+
+/* Кнопки */
+.game-btn {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.15s;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.game-btn:active { transform: scale(0.97); background: rgba(255,255,255,0.1); }
+.game-btn .info { font-size: 12px; opacity: 0.7; }
+.game-btn.free { border-color: #ffd700; background: rgba(255,215,0,0.1); }
+
+/* Кубик */
+.dice-display {
+    font-size: 80px;
+    text-align: center;
+    padding: 30px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+.dice-display.rolling { animation: rollDice 0.1s infinite; }
+@keyframes rollDice {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Колесо */
+.wheel-container {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto 12px;
+}
+.wheel {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 4px solid #ffd700;
+    overflow: hidden;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+.wheel-pointer {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: -10px;
+}
+#wheel-result { text-align: center; opacity: 0.7; margin-bottom: 12px; }
+
+/* Питомцы */
+.pet-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pet-card .buy-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #ffd700;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+.pet-card .owned { color: #00d4ff; font-weight: bold; }
+#bonus-display { text-align: center; opacity: 0.7; margin-top: 8px; }
+
+/* Результат */
+.result-box {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    text-align: center;
+    display: none;
+}
+.result-box.show { display: block; }
+.result-box .win { color: #ffd700; font-size: 22px; font-weight: bold; }
+.result-box .lose { color: #ff6b6b; font-size: 22px; font-weight: bold; }
+.result-box .amount { font-size: 32px; font-weight: bold; margin: 8px 0; }
+
+/* Статистика */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+.stat-item {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+}
+.stat-item .value { font-size: 20px; font-weight: bold; color: #ffd700; }
+.stat-item .label { font-size: 11px; opacity: 0.6; }
+
+/* Навигация */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 16px 20px;
+    background: rgba(10,10,46,0.95);
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+.nav-item {
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    transition: all 0.3s;
+}
+.nav-item.active { color: #ffd700; background: rgba(255,215,0,0.1); }
+.nav-item:active { transform: scale(0.95); }
+
+/* Профиль */
+.profile-card {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+.profile-avatar { font-size: 48px; }
+.profile-name { font-size: 20px; font-weight: 600; }
+.profile-id { font-size: 14px; opacity: 0.6; }
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.profile-stats div {
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+}
+.profile-stats .value { font-size: 18px; font-weight: bold; color: #ffd700; display: block; }
+.profile-stats .label { font-size: 11px; opacity: 0.6; }
+
+.profile-info {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+.profile-info div {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.profile-info div:last-child { border-bottom: none; }
+
+.withdraw-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #2aab6e;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.withdraw-btn:active { transform: scale(0.95); }
+
+/* Промокод */
+.promo-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.promo-input input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 16px;
+}
+.promo-input button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    background: #ffd700;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+#promo-result { text-align: center; padding: 8px; }
+
+/* Загрузка */
+#splash {
+    position: fixed;
+    inset: 0;
+    background: #0a0a2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+#splash .logo { font-size: 36px; font-weight: bold; color: #ffd700; margin-bottom: 20px; }
+.loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,215,0,0.1);
+    border-top: 3px solid #ffd700;
+    border-radius: 50%;
+    animation: loaderSpin 1s linear infinite;
+}
+@keyframes loaderSpin { to { transform: rotate(360deg); } }
