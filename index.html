@@ -17,7 +17,7 @@
     <!-- Головний додаток -->
     <div id="app" style="display:none;">
         <div class="container">
-            <!-- Хедер -->
+            <!-- Хедер з реальним балансом -->
             <div class="header">
                 <div class="balance">⭐ <span id="balance">0</span></div>
                 <div class="free-spins">🎰 <span id="free-spins">0</span></div>
@@ -31,7 +31,7 @@
                 <div class="tab" data-tab="pets">🐾 Питомцы</div>
             </div>
 
-            <!-- Сторінка Слоти -->
+            <!-- СЛОТИ -->
             <div class="page active" id="page-slots">
                 <div id="slot-machine">
                     <div class="reels" id="reels">
@@ -42,36 +42,37 @@
                     <div id="slot-status">Нажмите кнопку</div>
                 </div>
 
-                <button class="game-btn" onclick="playGame('slot', 25)">
-                    🟢 Мини <span class="info">25⭐ | 0-5⭐ | 8%</span>
+                <button class="game-btn" onclick="playSlot(25)">
+                    🟢 Мини <span class="info">25⭐ | 0-3⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('slot', 50)">
-                    🔵 Стандарт <span class="info">50⭐ | 0-10⭐ | 5%</span>
+                <button class="game-btn" onclick="playSlot(50)">
+                    🔵 Стандарт <span class="info">50⭐ | 0-5⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('slot', 100)">
-                    🟣 Премиум <span class="info">100⭐ | 0-25⭐ | 2%</span>
+                <button class="game-btn" onclick="playSlot(100)">
+                    🟣 Премиум <span class="info">100⭐ | 0-10⭐</span>
                 </button>
                 <button class="game-btn free" onclick="playFree()">
                     🎁 Бесплатно <span class="info" id="free-count">(0)</span>
                 </button>
             </div>
 
-            <!-- Сторінка Кубик -->
+            <!-- КУБИК -->
             <div class="page" id="page-dice">
                 <div class="dice-display" id="dice-display">⚀</div>
+                <div class="dice-result" id="dice-result">Нажмите кнопку</div>
                 
-                <button class="game-btn" onclick="playGame('dice', 10)">
-                    🎲 Простой <span class="info">10⭐ | x0-x5</span>
+                <button class="game-btn" onclick="playDice(10)">
+                    🎲 Простой <span class="info">10⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('dice', 25)">
-                    🎲 Стандарт <span class="info">25⭐ | x0-x5</span>
+                <button class="game-btn" onclick="playDice(25)">
+                    🎲 Стандарт <span class="info">25⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('dice', 50)">
-                    🎲 Высокий <span class="info">50⭐ | x0-x5</span>
+                <button class="game-btn" onclick="playDice(50)">
+                    🎲 Высокий <span class="info">50⭐</span>
                 </button>
             </div>
 
-            <!-- Сторінка Колесо -->
+            <!-- КОЛЕСО -->
             <div class="page" id="page-wheel">
                 <div class="wheel-container">
                     <div class="wheel-pointer">▼</div>
@@ -79,29 +80,29 @@
                 </div>
                 <div id="wheel-result">Нажмите кнопку</div>
                 
-                <button class="game-btn" onclick="playGame('wheel', 10)">
-                    🎡 Колесо <span class="info">10⭐ | 0-10⭐</span>
+                <button class="game-btn" onclick="playWheel(10)">
+                    🎡 Колесо <span class="info">10⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('wheel', 25)">
-                    🎡 Колесо <span class="info">25⭐ | 0-20⭐</span>
+                <button class="game-btn" onclick="playWheel(25)">
+                    🎡 Колесо <span class="info">25⭐</span>
                 </button>
-                <button class="game-btn" onclick="playGame('wheel', 50)">
-                    🎡 Колесо <span class="info">50⭐ | 0-50⭐</span>
+                <button class="game-btn" onclick="playWheel(50)">
+                    🎡 Колесо <span class="info">50⭐</span>
                 </button>
             </div>
 
-            <!-- Сторінка Питомці -->
+            <!-- ПИТОМЦЫ -->
             <div class="page" id="page-pets">
                 <div id="pets-list"></div>
                 <div id="bonus-display">🐾 Бонус: +0%</div>
             </div>
 
-            <!-- Результат -->
+            <!-- РЕЗУЛЬТАТ -->
             <div class="result-box" id="result-box">
                 <div id="result-content"></div>
             </div>
 
-            <!-- Статистика -->
+            <!-- СТАТИСТИКА -->
             <div class="stats">
                 <div class="stat-item"><div class="value" id="stat-games">0</div><div class="label">Игр</div></div>
                 <div class="stat-item"><div class="value" id="stat-win">0⭐</div><div class="label">Выиграно</div></div>
@@ -110,30 +111,30 @@
         </div>
     </div>
 
-    <!-- Нижня навігація -->
+    <!-- НАВИГАЦИЯ -->
     <div class="bottom-nav">
         <div class="nav-item active" data-page="game">🎮 Игра</div>
         <div class="nav-item" data-page="promo">🏷️ Промокод</div>
         <div class="nav-item" data-page="profile">👤 Профиль</div>
     </div>
 
-    <!-- Сторінка Промокод -->
+    <!-- ПРОМОКОД -->
     <div id="page-promo" style="display:none;padding:16px 20px;">
-        <h2>🏷️ Промокод</h2>
+        <h2 style="margin-bottom:16px;">🏷️ Промокод</h2>
         <div class="promo-input">
             <input type="text" id="promo-input" placeholder="Введите промокод">
             <button onclick="usePromo()">Активировать</button>
         </div>
         <div id="promo-result"></div>
         <div style="margin-top:16px;background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;">
-            <div style="font-weight:600;">Доступные промокоды:</div>
+            <div style="font-weight:600;margin-bottom:8px;">🔥 Доступные промокоды:</div>
             <div id="promo-list"></div>
         </div>
     </div>
 
-    <!-- Сторінка Профіль -->
+    <!-- ПРОФИЛЬ -->
     <div id="page-profile" style="display:none;padding:16px 20px;">
-        <h2>👤 Профиль</h2>
+        <h2 style="margin-bottom:16px;">👤 Профиль</h2>
         <div class="profile-card">
             <div class="profile-avatar">👤</div>
             <div class="profile-name" id="profile-name">Игрок</div>
@@ -150,6 +151,7 @@
             <div><span>🐾 Питомцев:</span><span id="p-pets">0</span></div>
         </div>
         <button class="withdraw-btn" onclick="withdraw()">💳 Вывод средств</button>
+        <button class="deposit-btn" onclick="deposit()">💳 Пополнить</button>
     </div>
 
     <script src="script.js"></script>
