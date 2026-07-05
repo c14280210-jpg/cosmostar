@@ -189,6 +189,16 @@
             overflow: hidden;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
             position: relative;
+            background: conic-gradient(
+                #00ff88 0deg 45deg,
+                #33cc66 45deg 90deg,
+                #ffd700 90deg 135deg,
+                #ff6b6b 135deg 180deg,
+                #00ff88 180deg 225deg,
+                #33cc66 225deg 270deg,
+                #ffd700 270deg 315deg,
+                #ff6b6b 315deg 360deg
+            );
         }
         
         .wheel-segment {
@@ -221,123 +231,6 @@
             opacity: 0.7;
             margin-bottom: 12px;
             font-size: 14px;
-        }
-        
-        /* ========== РАКЕТА ========== */
-        .rocket-container {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        
-        .rocket {
-            font-size: 60px;
-            display: inline-block;
-            transition: transform 0.1s;
-        }
-        
-        .rocket.flying {
-            animation: rocketFly 0.08s infinite;
-        }
-        
-        @keyframes rocketFly {
-            0% { transform: translateY(0) rotate(-5deg); }
-            100% { transform: translateY(-10px) rotate(5deg); }
-        }
-        
-        .rocket-multiplier {
-            font-size: 48px;
-            font-weight: 900;
-            color: #00ff88;
-            margin: 10px 0;
-        }
-        
-        .rocket-controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .rocket-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        
-        .rocket-btn:active { transform: scale(0.95); }
-        .rocket-btn.start { background: #00ff88; color: #000; }
-        .rocket-btn.stop { background: #ff4444; color: #fff; }
-        .rocket-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        
-        .rocket-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 12px;
-            font-size: 14px;
-            opacity: 0.7;
-        }
-        
-        .rocket-bet-btns {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .rocket-bet-btn {
-            padding: 6px 16px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 8px;
-            background: rgba(0, 255, 136, 0.04);
-            color: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.15s;
-        }
-        
-        .rocket-bet-btn.active { border-color: #00ff88; background: rgba(0, 255, 136, 0.12); color: #00ff88; }
-        .rocket-bet-btn:active { transform: scale(0.95); }
-        
-        /* ========== СВІЧКА ========== */
-        .candle-container {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        
-        .candle {
-            font-size: 80px;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-        
-        .candle.burning {
-            animation: candleBurn 0.5s infinite alternate;
-        }
-        
-        @keyframes candleBurn {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.05); opacity: 0.9; }
-        }
-        
-        .candle-result {
-            font-size: 28px;
-            font-weight: 700;
-            color: #00ff88;
-            margin: 10px 0;
         }
         
         /* ========== ПИТОМЦЫ ========== */
@@ -439,6 +332,50 @@
         .nav-item:active { transform: scale(0.95); }
         
         /* ========== ПРОФІЛЬ ========== */
+        .wallet-section {
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .wallet-section .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 12px;
+        }
+        
+        .wallet-btn {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 255, 136, 0.04);
+            color: #00ff88;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 8px;
+        }
+        
+        .wallet-btn:active { transform: scale(0.98); }
+        .wallet-btn.connected { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
+        .wallet-btn .sub { font-size: 12px; font-weight: 400; opacity: 0.6; display: block; }
+        
+        .wallet-address {
+            font-size: 12px;
+            opacity: 0.6;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+        
         .profile-card {
             text-align: center;
             padding: 20px;
@@ -486,50 +423,6 @@
         }
         
         .profile-info div:last-child { border-bottom: none; }
-        
-        .wallet-section {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .wallet-section .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #00ff88;
-            margin-bottom: 12px;
-        }
-        
-        .wallet-btn {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            border-radius: 12px;
-            background: rgba(0, 255, 136, 0.04);
-            color: #00ff88;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-            margin-bottom: 8px;
-        }
-        
-        .wallet-btn:active { transform: scale(0.98); }
-        .wallet-btn.connected { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
-        .wallet-btn .sub { font-size: 12px; font-weight: 400; opacity: 0.6; display: block; }
-        
-        .wallet-address {
-            font-size: 12px;
-            opacity: 0.6;
-            text-align: center;
-            padding: 8px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px;
-            margin-top: 8px;
-            word-break: break-all;
-        }
         
         .withdraw-btn, .deposit-btn {
             width: 100%;
@@ -711,6 +604,7 @@
     <div id="page-profile" style="display:none;padding:16px 20px;max-width:420px;margin:0 auto;">
         <h2 style="color:#00ff88;margin-bottom:16px;">👤 Профиль</h2>
         
+        <!-- TON Connect -->
         <div class="wallet-section">
             <div class="title">🔗 Подключение кошелька</div>
             <button class="wallet-btn" id="wallet-connect-btn" onclick="connectWallet()">
@@ -735,6 +629,7 @@
             <div><span>🎮 Игр:</span><span id="p-games">0</span></div>
             <div><span>💰 Выиграно:</span><span id="p-win">0⭐</span></div>
             <div><span>🐾 Питомцев:</span><span id="p-pets">0</span></div>
+            <div><span>🔗 Кошелек:</span><span id="p-wallet">Не подключен</span></div>
         </div>
         <button class="deposit-btn" onclick="deposit()">💳 Пополнить</button>
         <button class="withdraw-btn" onclick="withdraw()">💳 Вывод средств</button>
@@ -744,13 +639,21 @@
     </div>
 
     <script>
+        // ============================================================
+        // 1. ІНІЦІАЛІЗАЦІЯ TELEGRAM
+        // ============================================================
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // ============================================================
+        // 2. ID КОРИСТУВАЧА
+        // ============================================================
         const urlParams = new URLSearchParams(window.location.search);
         const USER_ID = urlParams.get('user_id') || '1';
 
-        // ========== СТАН ==========
+        // ============================================================
+        // 3. СТАН ДОДАТКУ
+        // ============================================================
         let state = {
             balance: 0,
             freeSpins: 5,
@@ -762,9 +665,83 @@
             wallet: null
         };
 
-        let isTonConnectLoaded = false;
+        // ============================================================
+        // 4. TON CONNECT (ПРОСТА РЕАЛІЗАЦІЯ)
+        // ============================================================
+        let tonConnector = null;
+        let tonReady = false;
 
-        // ========== ЗАВАНТАЖЕННЯ ==========
+        function loadTonSDK() {
+            return new Promise((resolve, reject) => {
+                if (window.TonConnectSDK) {
+                    resolve(window.TonConnectSDK);
+                    return;
+                }
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.0.4/dist/tonconnect-sdk.min.js';
+                script.onload = () => resolve(window.TonConnectSDK);
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        async function initTonConnect() {
+            try {
+                const SDK = await loadTonSDK();
+                tonConnector = new SDK.TonConnect({
+                    manifestUrl: 'https://c14280210-jpg.github.io/cosmostar/tonconnect-manifest.json'
+                });
+                tonReady = true;
+                
+                // Перевіряємо, чи вже є підключений гаманець
+                if (tonConnector.connected) {
+                    const wallet = tonConnector.wallet;
+                    if (wallet) {
+                        state.wallet = wallet.account.address;
+                        saveData();
+                        updateUI();
+                    }
+                }
+                console.log('✅ TON Connect готов');
+            } catch (e) {
+                console.error('❌ TON Connect помилка:', e);
+                tonReady = false;
+            }
+        }
+
+        async function connectWallet() {
+            if (!tonReady) {
+                showResult('⏳', 'Загрузка TON Connect...', '');
+                await initTonConnect();
+                if (!tonReady) {
+                    showResult('❌', 'Ошибка загрузки', 'Попробуйте позже');
+                    return;
+                }
+            }
+
+            try {
+                // Відкриваємо вікно вибору гаманця
+                await tonConnector.connect({
+                    bridgeUrl: 'https://bridge.tonapi.io/bridge',
+                    universalLink: 'https://app.tonkeeper.com/ton-connect',
+                });
+
+                const wallet = tonConnector.wallet;
+                if (wallet) {
+                    state.wallet = wallet.account.address;
+                    saveData();
+                    updateUI();
+                    showResult('🔗', 'Кошелек подключен!', state.wallet.slice(0, 10) + '...');
+                }
+            } catch (e) {
+                console.error('❌ Помилка підключення:', e);
+                showResult('❌', 'Ошибка подключения', '');
+            }
+        }
+
+        // ============================================================
+        // 5. ОСНОВНІ ФУНКЦІЇ
+        // ============================================================
         function loadData() {
             const saved = localStorage.getItem(`cosmostars_${USER_ID}`);
             if (saved) {
@@ -779,9 +756,9 @@
             document.getElementById('app').style.display = 'block';
             initWheel();
             
-            // Завантажуємо TON Connect асинхронно
+            // Ініціалізація TON Connect
             setTimeout(() => {
-                loadTonConnect();
+                initTonConnect();
             }, 1000);
         }
 
@@ -806,6 +783,7 @@
             document.getElementById('p-pets').textContent = state.pets.length;
             document.getElementById('profile-id').textContent = `ID: ${USER_ID}`;
             document.getElementById('profile-name').textContent = 'Игрок';
+            document.getElementById('p-wallet').textContent = state.wallet || 'Не подключен';
             
             if (state.wallet) {
                 document.getElementById('wallet-status').textContent = '✅ Подключен';
@@ -825,81 +803,9 @@
             renderPromoCodes();
         }
 
-        // ========== TON CONNECT (З ОБРОБКОЮ ПОМИЛОК) ==========
-        let tonConnector = null;
-
-        async function loadTonConnect() {
-            try {
-                // Завантажуємо бібліотеку динамічно
-                const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.0.4/dist/tonconnect-sdk.min.js';
-                script.onload = async () => {
-                    try {
-                        tonConnector = new TonConnectSDK.TonConnect({
-                            manifestUrl: 'https://c14280210-jpg.github.io/cosmostar/tonconnect-manifest.json'
-                        });
-                        isTonConnectLoaded = true;
-                        
-                        // Перевіряємо чи є підключений гаманець
-                        if (tonConnector.connected) {
-                            const wallet = tonConnector.wallet;
-                            if (wallet) {
-                                state.wallet = wallet.account.address;
-                                saveData();
-                                updateUI();
-                            }
-                        }
-                    } catch(e) {
-                        console.error('TON Connect init error:', e);
-                        isTonConnectLoaded = false;
-                    }
-                };
-                script.onerror = () => {
-                    console.error('Failed to load TON Connect SDK');
-                    isTonConnectLoaded = false;
-                };
-                document.head.appendChild(script);
-            } catch(e) {
-                console.error('TON Connect load error:', e);
-                isTonConnectLoaded = false;
-            }
-        }
-
-        async function connectWallet() {
-            if (!isTonConnectLoaded || !tonConnector) {
-                showResult('⏳', 'Загрузка TON Connect...', '');
-                // Повторна спроба завантаження
-                await loadTonConnect();
-                setTimeout(() => {
-                    if (!isTonConnectLoaded) {
-                        showResult('❌', 'TON Connect недоступен', 'Попробуйте позже');
-                    } else {
-                        connectWallet();
-                    }
-                }, 2000);
-                return;
-            }
-            
-            try {
-                await tonConnector.connect({
-                    bridgeUrl: 'https://bridge.tonapi.io/bridge',
-                    universalLink: 'https://app.tonkeeper.com/ton-connect',
-                });
-                
-                const wallet = tonConnector.wallet;
-                if (wallet) {
-                    state.wallet = wallet.account.address;
-                    saveData();
-                    updateUI();
-                    showResult('🔗', 'Кошелек подключен!', state.wallet.slice(0, 10) + '...');
-                }
-            } catch(e) {
-                console.error('Connect error:', e);
-                showResult('❌', 'Ошибка подключения', '');
-            }
-        }
-
-        // ========== ПИТОМЦЫ ==========
+        // ============================================================
+        // 6. ПИТОМЦЫ
+        // ============================================================
         const PETS = [
             { name: '🐹 Метеоритный Хомяк', price: 320, bonus: 12 },
             { name: '🌈 Кометный Единорог', price: 480, bonus: 18 },
@@ -939,7 +845,9 @@
             showResult('🎉', `Куплен ${name}!`, `+${PETS.find(p => p.name === name).bonus}%`);
         }
 
-        // ========== СЛОТИ ==========
+        // ============================================================
+        // 7. СЛОТИ
+        // ============================================================
         function playSlot(bet) {
             if (state.isSpinning) return;
             if (state.balance < bet && state.freeSpins <= 0) {
@@ -1024,7 +932,9 @@
             playSlot(20);
         }
 
-        // ========== КУБИК ==========
+        // ============================================================
+        // 8. КУБИК
+        // ============================================================
         function playDice(bet) {
             if (state.isSpinning) return;
             if (state.balance < bet) {
@@ -1077,7 +987,9 @@
             }, 80);
         }
 
-        // ========== КОЛЕСО ==========
+        // ============================================================
+        // 9. КОЛЕСО
+        // ============================================================
         function initWheel() {
             const wheel = document.getElementById('wheel');
             const segments = 8;
@@ -1140,7 +1052,9 @@
             }, 4000);
         }
 
-        // ========== ВЫВОД ==========
+        // ============================================================
+        // 10. ВЫВОД И ПОПОЛНЕНИЕ
+        // ============================================================
         function withdraw() {
             if (state.balance < 1000) {
                 showResult('❌', `Минимальный вывод: 1000⭐\nВаш баланс: ${state.balance}⭐`, '');
@@ -1164,7 +1078,6 @@
             updateUI();
         }
 
-        // ========== ПОПОЛНЕНИЕ ==========
         function deposit() {
             tg.sendData(JSON.stringify({
                 action: 'deposit'
@@ -1172,7 +1085,9 @@
             showResult('💳', 'Выберите пакет в Telegram Stars', '');
         }
 
-        // ========== ПРОМОКОД ==========
+        // ============================================================
+        // 11. ПРОМОКОД
+        // ============================================================
         function usePromo() {
             const input = document.getElementById('promo-input');
             const code = input.value.trim().toUpperCase();
@@ -1224,7 +1139,9 @@
             `;
         }
 
-        // ========== РЕЗУЛЬТАТ ==========
+        // ============================================================
+        // 12. РЕЗУЛЬТАТ
+        // ============================================================
         function showResult(emoji, status, amount) {
             const box = document.getElementById('result-box');
             const content = document.getElementById('result-content');
@@ -1240,7 +1157,9 @@
             setTimeout(() => box.classList.remove('show'), 5000);
         }
 
-        // ========== НАВИГАЦИЯ ==========
+        // ============================================================
+        // 13. НАВИГАЦИЯ
+        // ============================================================
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1260,7 +1179,9 @@
             });
         });
 
-        // ========== ОБРОБКА ПОВІДОМЛЕНЬ ==========
+        // ============================================================
+        // 14. ОБРОБКА ПОВІДОМЛЕНЬ ВІД БОТА
+        // ============================================================
         tg.onEvent('message', (msg) => {
             try {
                 const data = JSON.parse(msg);
@@ -1277,7 +1198,9 @@
             } catch(e) {}
         });
 
-        // ========== ЗАПУСК ==========
+        // ============================================================
+        // 15. ЗАПУСК
+        // ============================================================
         loadData();
     </script>
 </body>
