@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CosmoStars</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TON Connect SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.0.4/dist/tonconnect-sdk.min.js"></script>
     <style>
-        /* ===== ВСІ СТИЛІ ЗАЛИШАЮТЬСЯ БЕЗ ЗМІН ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
@@ -441,7 +438,55 @@
         .nav-item.active { color: #00ff88; background: rgba(0, 255, 136, 0.08); }
         .nav-item:active { transform: scale(0.95); }
         
-        /* ========== ПРОФІЛЬ - ПІДКЛЮЧЕННЯ ГАМАНЦЯ ========== */
+        /* ========== ПРОФІЛЬ ========== */
+        .profile-card {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.08);
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .profile-avatar { font-size: 48px; }
+        .profile-name { font-size: 20px; font-weight: 700; }
+        .profile-id { font-size: 14px; opacity: 0.5; }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .profile-stats div {
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.05);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .profile-stats .value { font-size: 18px; font-weight: 700; color: #00ff88; display: block; }
+        .profile-stats .label { font-size: 11px; opacity: 0.5; }
+        
+        .profile-info {
+            background: rgba(0, 255, 136, 0.04);
+            border: 1px solid rgba(0, 255, 136, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .profile-info div {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        
+        .profile-info div:last-child { border-bottom: none; }
+        
         .wallet-section {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.08);
@@ -485,6 +530,22 @@
             margin-top: 8px;
             word-break: break-all;
         }
+        
+        .withdraw-btn, .deposit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.15s;
+        }
+        
+        .withdraw-btn:active, .deposit-btn:active { transform: scale(0.98); }
+        .withdraw-btn { background: #00ff88; color: #000; }
+        .deposit-btn { background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.2); color: #00ff88; }
         
         /* ========== ПРОМОКОД ========== */
         .promo-input {
@@ -650,7 +711,6 @@
     <div id="page-profile" style="display:none;padding:16px 20px;max-width:420px;margin:0 auto;">
         <h2 style="color:#00ff88;margin-bottom:16px;">👤 Профиль</h2>
         
-        <!-- Підключення гаманця через TON Connect -->
         <div class="wallet-section">
             <div class="title">🔗 Подключение кошелька</div>
             <button class="wallet-btn" id="wallet-connect-btn" onclick="connectWallet()">
@@ -684,87 +744,13 @@
     </div>
 
     <script>
-        // ========== TON CONNECT ==========
-        // Ініціалізація TON Connect
-        let tonConnector = null;
-        let isWalletConnected = false;
-
-        async function initTonConnect() {
-            try {
-                // Створюємо екземпляр TON Connect
-                tonConnector = new TonConnectSDK.TonConnect({
-                    manifestUrl: 'https://c14280210-jpg.github.io/cosmostar/tonconnect-manifest.json'
-                });
-                
-                // Перевіряємо чи є підключений гаманець
-                if (tonConnector.connected) {
-                    const wallet = tonConnector.wallet;
-                    if (wallet) {
-                        isWalletConnected = true;
-                        state.wallet = wallet.account.address;
-                        saveData();
-                        updateUI();
-                        document.getElementById('wallet-status').textContent = '✅ Подключен';
-                        document.getElementById('wallet-status').classList.remove('disconnected');
-                        document.getElementById('wallet-address').textContent = '🔗 ' + state.wallet.slice(0, 6) + '...' + state.wallet.slice(-6);
-                        document.getElementById('wallet-connect-btn').textContent = '✅ Кошелек подключен';
-                        document.getElementById('wallet-connect-btn').classList.add('connected');
-                    }
-                }
-            } catch(e) {
-                console.error('TON Connect init error:', e);
-            }
-        }
-
-        // ========== ПІДКЛЮЧЕННЯ ГАМАНЦЯ ==========
-        async function connectWallet() {
-            try {
-                if (!tonConnector) {
-                    await initTonConnect();
-                }
-                
-                // Відкриваємо вікно вибору гаманця
-                const wallets = await tonConnector.getWallets();
-                
-                // Показуємо список гаманців
-                const walletList = wallets.map(w => 
-                    `${w.name} (${w.appName})`
-                ).join('\n');
-                
-                // В реальному проекті тут буде красиве модальне вікно
-                // Для демонстрації використовуємо стандартне підключення
-                await tonConnector.connect({
-                    bridgeUrl: 'https://bridge.tonapi.io/bridge',
-                    universalLink: 'https://app.tonkeeper.com/ton-connect',
-                });
-                
-                const wallet = tonConnector.wallet;
-                if (wallet) {
-                    isWalletConnected = true;
-                    state.wallet = wallet.account.address;
-                    saveData();
-                    updateUI();
-                    document.getElementById('wallet-status').textContent = '✅ Подключен';
-                    document.getElementById('wallet-status').classList.remove('disconnected');
-                    document.getElementById('wallet-address').textContent = '🔗 ' + state.wallet.slice(0, 6) + '...' + state.wallet.slice(-6);
-                    document.getElementById('wallet-connect-btn').textContent = '✅ Кошелек подключен';
-                    document.getElementById('wallet-connect-btn').classList.add('connected');
-                    
-                    showResult('🔗', 'Кошелек подключен!', state.wallet.slice(0, 10) + '...');
-                }
-            } catch(e) {
-                console.error('Connect error:', e);
-                showResult('❌', 'Ошибка подключения', '');
-            }
-        }
-
-        // ========== ІНШІ ФУНКЦІЇ (ЗАЛИШАЮТЬСЯ БЕЗ ЗМІН) ==========
         const tg = window.Telegram.WebApp;
         tg.expand();
 
         const urlParams = new URLSearchParams(window.location.search);
         const USER_ID = urlParams.get('user_id') || '1';
 
+        // ========== СТАН ==========
         let state = {
             balance: 0,
             freeSpins: 5,
@@ -776,6 +762,9 @@
             wallet: null
         };
 
+        let isTonConnectLoaded = false;
+
+        // ========== ЗАВАНТАЖЕННЯ ==========
         function loadData() {
             const saved = localStorage.getItem(`cosmostars_${USER_ID}`);
             if (saved) {
@@ -789,7 +778,11 @@
             document.getElementById('splash').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             initWheel();
-            initTonConnect();
+            
+            // Завантажуємо TON Connect асинхронно
+            setTimeout(() => {
+                loadTonConnect();
+            }, 1000);
         }
 
         function saveData() {
@@ -814,8 +807,96 @@
             document.getElementById('profile-id').textContent = `ID: ${USER_ID}`;
             document.getElementById('profile-name').textContent = 'Игрок';
             
+            if (state.wallet) {
+                document.getElementById('wallet-status').textContent = '✅ Подключен';
+                document.getElementById('wallet-status').classList.remove('disconnected');
+                document.getElementById('wallet-address').textContent = '🔗 ' + state.wallet.slice(0, 6) + '...' + state.wallet.slice(-6);
+                document.getElementById('wallet-connect-btn').textContent = '✅ Кошелек подключен';
+                document.getElementById('wallet-connect-btn').classList.add('connected');
+            } else {
+                document.getElementById('wallet-status').textContent = '🔗 Подключить';
+                document.getElementById('wallet-status').classList.add('disconnected');
+                document.getElementById('wallet-address').textContent = 'Кошелек не подключен';
+                document.getElementById('wallet-connect-btn').textContent = '📱 Подключить TON кошелек';
+                document.getElementById('wallet-connect-btn').classList.remove('connected');
+            }
+            
             renderPets();
             renderPromoCodes();
+        }
+
+        // ========== TON CONNECT (З ОБРОБКОЮ ПОМИЛОК) ==========
+        let tonConnector = null;
+
+        async function loadTonConnect() {
+            try {
+                // Завантажуємо бібліотеку динамічно
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.0.4/dist/tonconnect-sdk.min.js';
+                script.onload = async () => {
+                    try {
+                        tonConnector = new TonConnectSDK.TonConnect({
+                            manifestUrl: 'https://c14280210-jpg.github.io/cosmostar/tonconnect-manifest.json'
+                        });
+                        isTonConnectLoaded = true;
+                        
+                        // Перевіряємо чи є підключений гаманець
+                        if (tonConnector.connected) {
+                            const wallet = tonConnector.wallet;
+                            if (wallet) {
+                                state.wallet = wallet.account.address;
+                                saveData();
+                                updateUI();
+                            }
+                        }
+                    } catch(e) {
+                        console.error('TON Connect init error:', e);
+                        isTonConnectLoaded = false;
+                    }
+                };
+                script.onerror = () => {
+                    console.error('Failed to load TON Connect SDK');
+                    isTonConnectLoaded = false;
+                };
+                document.head.appendChild(script);
+            } catch(e) {
+                console.error('TON Connect load error:', e);
+                isTonConnectLoaded = false;
+            }
+        }
+
+        async function connectWallet() {
+            if (!isTonConnectLoaded || !tonConnector) {
+                showResult('⏳', 'Загрузка TON Connect...', '');
+                // Повторна спроба завантаження
+                await loadTonConnect();
+                setTimeout(() => {
+                    if (!isTonConnectLoaded) {
+                        showResult('❌', 'TON Connect недоступен', 'Попробуйте позже');
+                    } else {
+                        connectWallet();
+                    }
+                }, 2000);
+                return;
+            }
+            
+            try {
+                await tonConnector.connect({
+                    bridgeUrl: 'https://bridge.tonapi.io/bridge',
+                    universalLink: 'https://app.tonkeeper.com/ton-connect',
+                });
+                
+                const wallet = tonConnector.wallet;
+                if (wallet) {
+                    state.wallet = wallet.account.address;
+                    saveData();
+                    updateUI();
+                    showResult('🔗', 'Кошелек подключен!', state.wallet.slice(0, 10) + '...');
+                }
+            } catch(e) {
+                console.error('Connect error:', e);
+                showResult('❌', 'Ошибка подключения', '');
+            }
         }
 
         // ========== ПИТОМЦЫ ==========
