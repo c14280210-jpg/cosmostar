@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CosmoStars</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TON Connect SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@2.0.4/dist/tonconnect-sdk.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -359,7 +358,6 @@
         }
         #promo-result { text-align: center; padding: 8px; }
         
-        /* ===== ДЕПОЗИТ ===== */
         .deposit-section {
             background: rgba(0,255,136,0.04);
             border: 1px solid rgba(0,255,136,0.08);
@@ -478,7 +476,6 @@
                 <button class="game-btn" onclick="playWheel(50)">🎡 Большое <span class="info">50⭐ | 0-100⭐</span></button>
             </div>
 
-            <!-- ===== ДЕПОЗИТ ===== -->
             <div class="page" id="page-deposit">
                 <div class="deposit-section">
                     <div class="title">💳 Пополнение баланса</div>
@@ -510,7 +507,7 @@
                     </div>
                     <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05);margin-bottom:12px;">
                         <span style="opacity:0.6;">Вы получите</span>
-                        <span style="color:#00ff88;font-weight:700;" id="selected-stars">0 ⭐</span>
+                        <span style="color:#00ff88;font-weight:700;" id="selected-stars">50 ⭐</span>
                     </div>
                     <button class="deposit-btn-stars" onclick="deposit()">💳 Купить Stars</button>
                     <div style="text-align:center;font-size:11px;opacity:0.4;margin-top:8px;">
@@ -677,7 +674,7 @@
         }
 
         // ============================================================
-        // 6. ДЕПОЗИТ (ПОПОВНЕННЯ)
+        // 6. ДЕПОЗИТ
         // ============================================================
         let selectedPack = 50;
 
@@ -698,7 +695,6 @@
                 return;
             }
 
-            // Відправляємо запит на створення інвойсу через бота
             tg.sendData(JSON.stringify({
                 action: 'deposit',
                 stars: selectedPack,
@@ -707,7 +703,6 @@
 
             showResult('💳', 'Запрос на пополнение отправлен!', `${selectedPack} ⭐`);
             
-            // Симуляція поповнення (в реальному проекті це робить бот)
             state.balance += selectedPack;
             saveData();
             updateUI();
@@ -741,39 +736,49 @@
         }
 
         // ============================================================
-        // 8. ОНОВЛЕННЯ UI
+        // 8. ОНОВЛЕННЯ UI (З ПЕРЕВІРКАМИ)
         // ============================================================
         function updateUI() {
-            document.getElementById('balance').textContent = state.balance;
-            document.getElementById('free-spins').textContent = state.freeSpins;
-            document.getElementById('free-count').textContent = `(${state.freeSpins})`;
-            document.getElementById('stat-games').textContent = state.totalGames;
-            document.getElementById('stat-win').textContent = state.totalWin + '⭐';
-            document.getElementById('stat-pets').textContent = state.pets.length;
-            document.getElementById('bonus-display').textContent = `🐾 Бонус: +${state.petBonus}%`;
+            const el = (id) => document.getElementById(id);
             
-            document.getElementById('p-balance').textContent = state.balance + '⭐';
-            document.getElementById('p-spins').textContent = state.freeSpins;
-            document.getElementById('p-bonus').textContent = '+' + state.petBonus + '%';
-            document.getElementById('p-games').textContent = state.totalGames;
-            document.getElementById('p-win').textContent = state.totalWin + '⭐';
-            document.getElementById('p-pets').textContent = state.pets.length;
-            document.getElementById('profile-id').textContent = `ID: ${USER_ID}`;
-            document.getElementById('profile-name').textContent = 'Игрок';
-            document.getElementById('p-wallet').textContent = state.wallet || 'Не подключен';
+            if (el('balance')) el('balance').textContent = state.balance;
+            if (el('free-spins')) el('free-spins').textContent = state.freeSpins;
+            if (el('free-count')) el('free-count').textContent = `(${state.freeSpins})`;
+            if (el('stat-games')) el('stat-games').textContent = state.totalGames;
+            if (el('stat-win')) el('stat-win').textContent = state.totalWin + '⭐';
+            if (el('stat-pets')) el('stat-pets').textContent = state.pets.length;
+            if (el('bonus-display')) el('bonus-display').textContent = `🐾 Бонус: +${state.petBonus}%`;
+            
+            if (el('p-balance')) el('p-balance').textContent = state.balance + '⭐';
+            if (el('p-spins')) el('p-spins').textContent = state.freeSpins;
+            if (el('p-bonus')) el('p-bonus').textContent = '+' + state.petBonus + '%';
+            if (el('p-games')) el('p-games').textContent = state.totalGames;
+            if (el('p-win')) el('p-win').textContent = state.totalWin + '⭐';
+            if (el('p-pets')) el('p-pets').textContent = state.pets.length;
+            if (el('profile-id')) el('profile-id').textContent = `ID: ${USER_ID}`;
+            if (el('profile-name')) el('profile-name').textContent = 'Игрок';
+            if (el('p-wallet')) el('p-wallet').textContent = state.wallet || 'Не подключен';
             
             if (state.wallet) {
-                document.getElementById('wallet-status').textContent = '✅ Подключен';
-                document.getElementById('wallet-status').classList.remove('disconnected');
-                document.getElementById('wallet-address').textContent = '🔗 ' + state.wallet.slice(0, 6) + '...' + state.wallet.slice(-6);
-                document.getElementById('wallet-connect-btn').textContent = '✅ Кошелек подключен';
-                document.getElementById('wallet-connect-btn').classList.add('connected');
+                if (el('wallet-status')) {
+                    el('wallet-status').textContent = '✅ Подключен';
+                    el('wallet-status').classList.remove('disconnected');
+                }
+                if (el('wallet-address')) el('wallet-address').textContent = '🔗 ' + state.wallet.slice(0, 6) + '...' + state.wallet.slice(-6);
+                if (el('wallet-connect-btn')) {
+                    el('wallet-connect-btn').textContent = '✅ Кошелек подключен';
+                    el('wallet-connect-btn').classList.add('connected');
+                }
             } else {
-                document.getElementById('wallet-status').textContent = '🔗 Подключить';
-                document.getElementById('wallet-status').classList.add('disconnected');
-                document.getElementById('wallet-address').textContent = 'Кошелек не подключен';
-                document.getElementById('wallet-connect-btn').textContent = '📱 Подключить TON кошелек';
-                document.getElementById('wallet-connect-btn').classList.remove('connected');
+                if (el('wallet-status')) {
+                    el('wallet-status').textContent = '🔗 Подключить';
+                    el('wallet-status').classList.add('disconnected');
+                }
+                if (el('wallet-address')) el('wallet-address').textContent = 'Кошелек не подключен';
+                if (el('wallet-connect-btn')) {
+                    el('wallet-connect-btn').textContent = '📱 Подключить TON кошелек';
+                    el('wallet-connect-btn').classList.remove('connected');
+                }
             }
             
             renderPets();
