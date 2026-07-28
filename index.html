@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CosmoStars</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- TON Connect (ПРАВИЛЬНИЙ СПОСІБ) -->
+    <!-- TON Connect SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@2.0.4/dist/tonconnect-sdk.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -359,6 +359,49 @@
         }
         #promo-result { text-align: center; padding: 8px; }
         
+        /* ===== ДЕПОЗИТ ===== */
+        .deposit-section {
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .deposit-section .title { font-size: 14px; font-weight: 600; color: #00ff88; margin-bottom: 12px; }
+        .deposit-packs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .deposit-pack {
+            padding: 12px;
+            border: 1px solid rgba(0,255,136,0.15);
+            border-radius: 12px;
+            background: rgba(0,255,136,0.04);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+        .deposit-pack:active { transform: scale(0.95); }
+        .deposit-pack.active { border-color: #00ff88; background: rgba(0,255,136,0.12); }
+        .deposit-pack .stars { font-size: 20px; font-weight: 700; color: #00ff88; }
+        .deposit-pack .price { font-size: 12px; opacity: 0.6; }
+        
+        .deposit-btn-stars {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #00ff88;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .deposit-btn-stars:active { transform: scale(0.98); }
+        
         #splash {
             position: fixed;
             inset: 0;
@@ -398,7 +441,7 @@
                 <div class="tab active" data-tab="slots"><span class="icon">🎰</span>Слоты</div>
                 <div class="tab" data-tab="dice"><span class="icon">🎲</span>Кубик</div>
                 <div class="tab" data-tab="wheel"><span class="icon">🎡</span>Колесо</div>
-                <div class="tab" data-tab="pets"><span class="icon">🐾</span>Питомцы</div>
+                <div class="tab" data-tab="deposit"><span class="icon">💳</span>Депозит</div>
             </div>
 
             <div class="page active" id="page-slots">
@@ -435,9 +478,45 @@
                 <button class="game-btn" onclick="playWheel(50)">🎡 Большое <span class="info">50⭐ | 0-100⭐</span></button>
             </div>
 
-            <div class="page" id="page-pets">
-                <div id="pets-list"></div>
-                <div id="bonus-display">🐾 Бонус: +0%</div>
+            <!-- ===== ДЕПОЗИТ ===== -->
+            <div class="page" id="page-deposit">
+                <div class="deposit-section">
+                    <div class="title">💳 Пополнение баланса</div>
+                    <div class="deposit-packs">
+                        <div class="deposit-pack" onclick="selectPack(50)">
+                            <div class="stars">50 ⭐</div>
+                            <div class="price">0.47 TON</div>
+                        </div>
+                        <div class="deposit-pack" onclick="selectPack(100)">
+                            <div class="stars">100 ⭐</div>
+                            <div class="price">0.94 TON</div>
+                        </div>
+                        <div class="deposit-pack" onclick="selectPack(250)">
+                            <div class="stars">250 ⭐</div>
+                            <div class="price">2.34 TON</div>
+                        </div>
+                        <div class="deposit-pack" onclick="selectPack(500)">
+                            <div class="stars">500 ⭐</div>
+                            <div class="price">4.69 TON</div>
+                        </div>
+                        <div class="deposit-pack" onclick="selectPack(1000)">
+                            <div class="stars">1000 ⭐</div>
+                            <div class="price">9.38 TON</div>
+                        </div>
+                        <div class="deposit-pack" onclick="selectPack(2500)">
+                            <div class="stars">2500 ⭐</div>
+                            <div class="price">23.45 TON</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05);margin-bottom:12px;">
+                        <span style="opacity:0.6;">Вы получите</span>
+                        <span style="color:#00ff88;font-weight:700;" id="selected-stars">0 ⭐</span>
+                    </div>
+                    <button class="deposit-btn-stars" onclick="deposit()">💳 Купить Stars</button>
+                    <div style="text-align:center;font-size:11px;opacity:0.4;margin-top:8px;">
+                        Комиссия 0.5% | Мин. депозит 50⭐
+                    </div>
+                </div>
             </div>
 
             <div class="result-box" id="result-box">
@@ -500,7 +579,6 @@
             <div><span>🐾 Питомцев:</span><span id="p-pets">0</span></div>
             <div><span>🔗 Кошелек:</span><span id="p-wallet">Не подключен</span></div>
         </div>
-        <button class="deposit-btn" onclick="deposit()">💳 Пополнить</button>
         <button class="withdraw-btn" onclick="withdraw()">💳 Вывод средств</button>
         <div style="margin-top:12px;font-size:12px;opacity:0.4;text-align:center;">💰 Вывод от 1000⭐ | Комиссия 0.5%</div>
     </div>
@@ -519,7 +597,7 @@
         const USER_ID = urlParams.get('user_id') || '1';
 
         // ============================================================
-        // 3. API КЛЮЧ (ОТРИМАЙТЕ В @tonapibot)
+        // 3. API КЛЮЧ TON
         // ============================================================
         const TON_API_KEY = 'ee4d0b25213cab784373bbdadddbec49c9b3b600ffe7c60f285a16ad416e94a2';
 
@@ -534,17 +612,17 @@
             totalGames: 0,
             totalWin: 0,
             isSpinning: false,
-            wallet: null
+            wallet: null,
+            selectedPack: 50
         };
 
         let tonConnector = null;
 
         // ============================================================
-        // 5. TON CONNECT (ПРАВИЛЬНА РЕАЛІЗАЦІЯ)
+        // 5. TON CONNECT
         // ============================================================
         async function initTonConnect() {
             try {
-                // Перевіряємо чи бібліотека завантажена
                 if (typeof TonConnect === 'undefined') {
                     console.warn('⚠️ TON Connect SDK не завантажено');
                     return;
@@ -557,7 +635,6 @@
 
                 console.log('✅ TON Connect готов');
 
-                // Перевіряємо чи вже є підключений гаманець
                 if (tonConnector.connected) {
                     const wallet = tonConnector.wallet;
                     if (wallet) {
@@ -600,7 +677,44 @@
         }
 
         // ============================================================
-        // 6. ЗАВАНТАЖЕННЯ
+        // 6. ДЕПОЗИТ (ПОПОВНЕННЯ)
+        // ============================================================
+        let selectedPack = 50;
+
+        function selectPack(stars) {
+            selectedPack = stars;
+            document.querySelectorAll('.deposit-pack').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.deposit-pack').forEach(el => {
+                if (el.querySelector('.stars').textContent.includes(stars)) {
+                    el.classList.add('active');
+                }
+            });
+            document.getElementById('selected-stars').textContent = stars + ' ⭐';
+        }
+
+        function deposit() {
+            if (!state.wallet) {
+                showResult('❌', 'Сначала подключите TON кошелек!', '');
+                return;
+            }
+
+            // Відправляємо запит на створення інвойсу через бота
+            tg.sendData(JSON.stringify({
+                action: 'deposit',
+                stars: selectedPack,
+                wallet: state.wallet
+            }));
+
+            showResult('💳', 'Запрос на пополнение отправлен!', `${selectedPack} ⭐`);
+            
+            // Симуляція поповнення (в реальному проекті це робить бот)
+            state.balance += selectedPack;
+            saveData();
+            updateUI();
+        }
+
+        // ============================================================
+        // 7. ЗАВАНТАЖЕННЯ
         // ============================================================
         function loadData() {
             const saved = localStorage.getItem(`cosmostars_${USER_ID}`);
@@ -615,8 +729,8 @@
             document.getElementById('splash').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             initWheel();
+            selectPack(50);
             
-            // Ініціалізація TON Connect через 1.5 секунди
             setTimeout(() => {
                 initTonConnect();
             }, 1500);
@@ -627,7 +741,7 @@
         }
 
         // ============================================================
-        // 7. ОНОВЛЕННЯ UI
+        // 8. ОНОВЛЕННЯ UI
         // ============================================================
         function updateUI() {
             document.getElementById('balance').textContent = state.balance;
@@ -667,7 +781,7 @@
         }
 
         // ============================================================
-        // 8. ПИТОМЦЫ
+        // 9. ПИТОМЦЫ
         // ============================================================
         const PETS = [
             { name: '🐹 Метеоритный Хомяк', price: 320, bonus: 12 },
@@ -678,6 +792,7 @@
 
         function renderPets() {
             const container = document.getElementById('pets-list');
+            if (!container) return;
             container.innerHTML = PETS.map(pet => {
                 const owned = state.pets.includes(pet.name);
                 return `
@@ -709,7 +824,7 @@
         }
 
         // ============================================================
-        // 9. СЛОТИ
+        // 10. СЛОТИ
         // ============================================================
         function playSlot(bet) {
             if (state.isSpinning) return;
@@ -796,7 +911,7 @@
         }
 
         // ============================================================
-        // 10. КУБИК
+        // 11. КУБИК
         // ============================================================
         function playDice(bet) {
             if (state.isSpinning) return;
@@ -851,7 +966,7 @@
         }
 
         // ============================================================
-        // 11. КОЛЕСО
+        // 12. КОЛЕСО
         // ============================================================
         function initWheel() {
             const wheel = document.getElementById('wheel');
@@ -916,7 +1031,7 @@
         }
 
         // ============================================================
-        // 12. ВЫВОД И ПОПОЛНЕНИЕ
+        // 13. ВЫВОД
         // ============================================================
         function withdraw() {
             if (state.balance < 1000) {
@@ -941,15 +1056,8 @@
             updateUI();
         }
 
-        function deposit() {
-            tg.sendData(JSON.stringify({
-                action: 'deposit'
-            }));
-            showResult('💳', 'Выберите пакет в Telegram Stars', '');
-        }
-
         // ============================================================
-        // 13. ПРОМОКОД
+        // 14. ПРОМОКОД
         // ============================================================
         function usePromo() {
             const input = document.getElementById('promo-input');
@@ -986,6 +1094,7 @@
 
         function renderPromoCodes() {
             const container = document.getElementById('promo-list');
+            if (!container) return;
             container.innerHTML = `
                 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,255,136,0.05);">
                     <span>ENJOY</span>
@@ -1003,12 +1112,12 @@
         }
 
         // ============================================================
-        // 14. РЕЗУЛЬТАТ
+        // 15. РЕЗУЛЬТАТ
         // ============================================================
         function showResult(emoji, status, amount) {
             const box = document.getElementById('result-box');
             const content = document.getElementById('result-content');
-            const isWin = status.includes('WIN');
+            const isWin = status.includes('WIN') || status.includes('выигрыш');
             
             content.innerHTML = `
                 <div style="font-size:48px;">${emoji}</div>
@@ -1021,7 +1130,7 @@
         }
 
         // ============================================================
-        // 15. НАВИГАЦИЯ
+        // 16. НАВИГАЦИЯ
         // ============================================================
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -1043,7 +1152,7 @@
         });
 
         // ============================================================
-        // 16. ОБРОБКА ПОВІДОМЛЕНЬ ВІД БОТА
+        // 17. ОБРОБКА ПОВІДОМЛЕНЬ ВІД БОТА
         // ============================================================
         tg.onEvent('message', (msg) => {
             try {
@@ -1058,11 +1167,17 @@
                     showResult('✅', 'Платёж успешен!', '');
                     loadData();
                 }
+                if (data.action === 'deposit_success') {
+                    state.balance += data.stars;
+                    saveData();
+                    updateUI();
+                    showResult('💳', 'Пополнение успешно!', `+${data.stars}⭐`);
+                }
             } catch(e) {}
         });
 
         // ============================================================
-        // 17. ЗАПУСК
+        // 18. ЗАПУСК
         // ============================================================
         loadData();
     </script>
