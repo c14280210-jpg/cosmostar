@@ -7,23 +7,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; padding-bottom: 80px; }
+        .container { max-width: 420px; margin: 0 auto; padding: 16px; }
         
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0a0a0a;
-            color: #ffffff;
-            min-height: 100vh;
-            padding-bottom: 80px;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-        
-        /* ========== ХЕДЕР ========== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -34,13 +20,7 @@
             border-radius: 16px;
             margin-bottom: 16px;
         }
-        
-        .balance {
-            font-size: 22px;
-            font-weight: 700;
-            color: #00ff88;
-        }
-        
+        .balance { font-size: 22px; font-weight: 700; color: #00ff88; }
         .wallet-status {
             font-size: 12px;
             padding: 4px 12px;
@@ -50,21 +30,14 @@
             border: 1px solid rgba(0, 255, 136, 0.2);
             cursor: pointer;
         }
+        .wallet-status.disconnected { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.2); background: rgba(255, 107, 107, 0.1); }
         
-        .wallet-status.disconnected {
-            color: #ff6b6b;
-            border-color: rgba(255, 107, 107, 0.2);
-            background: rgba(255, 107, 107, 0.1);
-        }
-        
-        /* ========== ВКЛАДКИ ========== */
         .tabs {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 4px;
             margin-bottom: 16px;
         }
-        
         .tab {
             padding: 10px 4px;
             text-align: center;
@@ -76,22 +49,13 @@
             color: #666;
             transition: all 0.3s;
         }
-        
-        .tab.active {
-            background: rgba(0, 255, 136, 0.12);
-            border-color: #00ff88;
-            color: #00ff88;
-        }
-        
-        .tab:active { transform: scale(0.95); }
+        .tab.active { background: rgba(0, 255, 136, 0.12); border-color: #00ff88; color: #00ff88; }
         .tab .icon { font-size: 20px; display: block; margin-bottom: 2px; }
         
-        /* ========== СТОРІНКИ ========== */
         .page { display: none; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* ========== СЛОТИ ========== */
         #slot-machine {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.08);
@@ -100,7 +64,6 @@
             text-align: center;
             margin-bottom: 16px;
         }
-        
         .reels {
             display: flex;
             justify-content: center;
@@ -108,7 +71,6 @@
             font-size: 48px;
             margin: 10px 0;
         }
-        
         .reel {
             width: 60px;
             height: 70px;
@@ -118,18 +80,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.1s;
         }
-        
         .reel.spinning { animation: spinReel 0.08s infinite; }
-        @keyframes spinReel {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-6px); }
-        }
-        
+        @keyframes spinReel { 0% { transform: translateY(0); } 100% { transform: translateY(-6px); } }
         #slot-status { font-size: 14px; opacity: 0.7; margin-top: 8px; }
         
-        /* ========== КНОПКИ ========== */
         .game-btn {
             width: 100%;
             padding: 14px 16px;
@@ -137,7 +92,7 @@
             border: 1px solid rgba(0, 255, 136, 0.15);
             border-radius: 12px;
             background: rgba(0, 255, 136, 0.04);
-            color: #ffffff;
+            color: #fff;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
@@ -146,14 +101,12 @@
             align-items: center;
             transition: all 0.15s;
         }
-        
         .game-btn:active { transform: scale(0.97); background: rgba(0, 255, 136, 0.08); }
         .game-btn .info { font-size: 12px; opacity: 0.6; }
         .game-btn .info .win { color: #00ff88; }
         .game-btn .info .chance { color: #ff6b6b; }
         .game-btn.free { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
         
-        /* ========== КУБИК ========== */
         .dice-display {
             font-size: 80px;
             text-align: center;
@@ -164,23 +117,16 @@
             margin-bottom: 8px;
             transition: all 0.3s;
         }
-        
         .dice-display.rolling { animation: rollDice 0.08s infinite; }
-        @keyframes rollDice {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.05); }
-        }
-        
+        @keyframes rollDice { 0% { transform: rotate(0deg) scale(1); } 100% { transform: rotate(360deg) scale(1.05); } }
         .dice-result { text-align: center; opacity: 0.7; margin-bottom: 12px; font-size: 14px; }
         
-        /* ========== КОЛЕСО ========== */
         .wheel-container {
             position: relative;
             width: 100%;
             max-width: 300px;
             margin: 0 auto 12px;
         }
-        
         .wheel {
             width: 100%;
             aspect-ratio: 1;
@@ -189,18 +135,8 @@
             overflow: hidden;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
             position: relative;
-            background: conic-gradient(
-                #00ff88 0deg 45deg,
-                #33cc66 45deg 90deg,
-                #ffd700 90deg 135deg,
-                #ff6b6b 135deg 180deg,
-                #00ff88 180deg 225deg,
-                #33cc66 225deg 270deg,
-                #ffd700 270deg 315deg,
-                #ff6b6b 315deg 360deg
-            );
+            background: conic-gradient(#00ff88 0deg 45deg, #33cc66 45deg 90deg, #ffd700 90deg 135deg, #ff6b6b 135deg 180deg, #00ff88 180deg 225deg, #33cc66 225deg 270deg, #ffd700 270deg 315deg, #ff6b6b 315deg 360deg);
         }
-        
         .wheel-segment {
             position: absolute;
             width: 50%;
@@ -215,25 +151,9 @@
             text-shadow: 0 0 8px rgba(0,0,0,0.8);
             padding-left: 15px;
         }
+        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 32px; z-index: 2; color: #00ff88; }
+        #wheel-result { text-align: center; opacity: 0.7; margin-bottom: 12px; font-size: 14px; }
         
-        .wheel-pointer {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 32px;
-            z-index: 2;
-            color: #00ff88;
-        }
-        
-        #wheel-result {
-            text-align: center;
-            opacity: 0.7;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-        
-        /* ========== ПИТОМЦЫ ========== */
         .pet-card {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.08);
@@ -244,7 +164,6 @@
             justify-content: space-between;
             align-items: center;
         }
-        
         .pet-card .buy-btn {
             padding: 8px 18px;
             border: none;
@@ -253,20 +172,10 @@
             color: #000;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.15s;
         }
-        
-        .pet-card .buy-btn:active { transform: scale(0.95); }
         .pet-card .owned { color: #00ff88; font-weight: 700; }
+        #bonus-display { text-align: center; opacity: 0.7; margin-top: 8px; font-size: 14px; }
         
-        #bonus-display {
-            text-align: center;
-            opacity: 0.7;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        
-        /* ========== РЕЗУЛЬТАТ ========== */
         .result-box {
             margin-top: 16px;
             padding: 16px;
@@ -276,20 +185,17 @@
             text-align: center;
             display: none;
         }
-        
         .result-box.show { display: block; }
         .result-box .win { color: #00ff88; font-size: 22px; font-weight: 700; }
         .result-box .lose { color: #ff4444; font-size: 22px; font-weight: 700; }
         .result-box .amount { font-size: 32px; font-weight: 700; margin: 8px 0; }
         
-        /* ========== СТАТИСТИКА ========== */
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin-top: 12px;
         }
-        
         .stat-item {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.05);
@@ -297,11 +203,9 @@
             border-radius: 12px;
             text-align: center;
         }
-        
         .stat-item .value { font-size: 20px; font-weight: 700; color: #00ff88; }
         .stat-item .label { font-size: 11px; opacity: 0.5; margin-top: 2px; }
         
-        /* ========== НАВИГАЦИЯ ========== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -315,7 +219,6 @@
             border-top: 1px solid rgba(0, 255, 136, 0.08);
             z-index: 100;
         }
-        
         .nav-item {
             padding: 8px 12px;
             border-radius: 12px;
@@ -326,12 +229,9 @@
             font-size: 12px;
             text-align: center;
         }
-        
         .nav-item .icon { font-size: 20px; display: block; }
         .nav-item.active { color: #00ff88; background: rgba(0, 255, 136, 0.08); }
-        .nav-item:active { transform: scale(0.95); }
         
-        /* ========== ПРОФІЛЬ ========== */
         .wallet-section {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.08);
@@ -339,14 +239,7 @@
             padding: 16px;
             margin-bottom: 16px;
         }
-        
-        .wallet-section .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #00ff88;
-            margin-bottom: 12px;
-        }
-        
+        .wallet-section .title { font-size: 14px; font-weight: 600; color: #00ff88; margin-bottom: 12px; }
         .wallet-btn {
             width: 100%;
             padding: 14px;
@@ -357,14 +250,12 @@
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.15s;
             margin-bottom: 8px;
+            transition: all 0.15s;
         }
-        
         .wallet-btn:active { transform: scale(0.98); }
         .wallet-btn.connected { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
         .wallet-btn .sub { font-size: 12px; font-weight: 400; opacity: 0.6; display: block; }
-        
         .wallet-address {
             font-size: 12px;
             opacity: 0.6;
@@ -384,7 +275,6 @@
             border-radius: 16px;
             margin-bottom: 16px;
         }
-        
         .profile-avatar { font-size: 48px; }
         .profile-name { font-size: 20px; font-weight: 700; }
         .profile-id { font-size: 14px; opacity: 0.5; }
@@ -395,7 +285,6 @@
             gap: 8px;
             margin-bottom: 16px;
         }
-        
         .profile-stats div {
             background: rgba(0, 255, 136, 0.04);
             border: 1px solid rgba(0, 255, 136, 0.05);
@@ -403,7 +292,6 @@
             border-radius: 12px;
             text-align: center;
         }
-        
         .profile-stats .value { font-size: 18px; font-weight: 700; color: #00ff88; display: block; }
         .profile-stats .label { font-size: 11px; opacity: 0.5; }
         
@@ -414,14 +302,12 @@
             padding: 12px;
             margin-bottom: 16px;
         }
-        
         .profile-info div {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
-        
         .profile-info div:last-child { border-bottom: none; }
         
         .withdraw-btn, .deposit-btn {
@@ -435,18 +321,15 @@
             margin-bottom: 8px;
             transition: all 0.15s;
         }
-        
         .withdraw-btn:active, .deposit-btn:active { transform: scale(0.98); }
         .withdraw-btn { background: #00ff88; color: #000; }
         .deposit-btn { background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.2); color: #00ff88; }
         
-        /* ========== ПРОМОКОД ========== */
         .promo-input {
             display: flex;
             gap: 10px;
             margin-bottom: 12px;
         }
-        
         .promo-input input {
             flex: 1;
             padding: 14px;
@@ -457,7 +340,6 @@
             font-size: 16px;
             outline: none;
         }
-        
         .promo-input input:focus { border-color: #00ff88; }
         .promo-input button {
             padding: 14px 24px;
@@ -468,10 +350,8 @@
             font-weight: 700;
             cursor: pointer;
         }
-        
         #promo-result { text-align: center; padding: 8px; }
         
-        /* ========== ЗАГРУЗКА ========== */
         #splash {
             position: fixed;
             inset: 0;
@@ -482,7 +362,6 @@
             justify-content: center;
             z-index: 9999;
         }
-        
         #splash .logo { font-size: 36px; font-weight: 700; color: #00ff88; margin-bottom: 20px; }
         .loader {
             width: 40px;
@@ -496,22 +375,18 @@
     </style>
 </head>
 <body>
-    <!-- Заставка -->
     <div id="splash">
         <div class="logo">🌌 CosmoStars</div>
         <div class="loader"></div>
     </div>
 
-    <!-- Головний додаток -->
     <div id="app" style="display:none;">
         <div class="container">
-            <!-- Хедер -->
             <div class="header">
                 <div class="balance">⭐ <span id="balance">0</span></div>
                 <div class="wallet-status disconnected" id="wallet-status" onclick="connectWallet()">🔗 Подключить</div>
             </div>
 
-            <!-- Вкладки -->
             <div class="tabs">
                 <div class="tab active" data-tab="slots"><span class="icon">🎰</span>Слоты</div>
                 <div class="tab" data-tab="dice"><span class="icon">🎲</span>Кубик</div>
@@ -519,7 +394,6 @@
                 <div class="tab" data-tab="pets"><span class="icon">🐾</span>Питомцы</div>
             </div>
 
-            <!-- СЛОТИ -->
             <div class="page active" id="page-slots">
                 <div id="slot-machine">
                     <div class="reels" id="reels">
@@ -529,48 +403,40 @@
                     </div>
                     <div id="slot-status">Нажмите кнопку</div>
                 </div>
-
                 <button class="game-btn" onclick="playSlot(20)">⭐ Золотой <span class="info">20⭐ | 0-50⭐ <span class="chance">| 5%</span></span></button>
                 <button class="game-btn" onclick="playSlot(50)">⭐ Бриллиантовый <span class="info">50⭐ | 0-100⭐ <span class="chance">| 3%</span></span></button>
                 <button class="game-btn" onclick="playSlot(100)">⭐ Легендарный <span class="info">100⭐ | 0-250⭐ <span class="chance">| 1%</span></span></button>
                 <button class="game-btn free" onclick="playFree()">🎁 Бесплатно <span class="info" id="free-count">(0)</span></button>
             </div>
 
-            <!-- КУБИК -->
             <div class="page" id="page-dice">
                 <div class="dice-display" id="dice-display">⚀</div>
                 <div class="dice-result" id="dice-result">Нажмите кнопку</div>
-                
                 <button class="game-btn" onclick="playDice(10)">🎲 Удача <span class="info">10⭐ | x0-x3</span></button>
                 <button class="game-btn" onclick="playDice(25)">🎲 Риск <span class="info">25⭐ | x0-x5</span></button>
                 <button class="game-btn" onclick="playDice(50)">🎲 Джекпот <span class="info">50⭐ | x0-x8</span></button>
             </div>
 
-            <!-- КОЛЕСО -->
             <div class="page" id="page-wheel">
                 <div class="wheel-container">
                     <div class="wheel-pointer">▼</div>
                     <div class="wheel" id="wheel"></div>
                 </div>
                 <div id="wheel-result">Нажмите кнопку</div>
-                
                 <button class="game-btn" onclick="playWheel(10)">🎡 Малое <span class="info">10⭐ | 0-20⭐</span></button>
                 <button class="game-btn" onclick="playWheel(25)">🎡 Среднее <span class="info">25⭐ | 0-50⭐</span></button>
                 <button class="game-btn" onclick="playWheel(50)">🎡 Большое <span class="info">50⭐ | 0-100⭐</span></button>
             </div>
 
-            <!-- ПИТОМЦЫ -->
             <div class="page" id="page-pets">
                 <div id="pets-list"></div>
                 <div id="bonus-display">🐾 Бонус: +0%</div>
             </div>
 
-            <!-- РЕЗУЛЬТАТ -->
             <div class="result-box" id="result-box">
                 <div id="result-content"></div>
             </div>
 
-            <!-- СТАТИСТИКА -->
             <div class="stats">
                 <div class="stat-item"><div class="value" id="stat-games">0</div><div class="label">Игр</div></div>
                 <div class="stat-item"><div class="value" id="stat-win">0⭐</div><div class="label">Выиграно</div></div>
@@ -579,14 +445,12 @@
         </div>
     </div>
 
-    <!-- НАВИГАЦИЯ -->
     <div class="bottom-nav">
-        <div class="nav-item active" data-page="game">🎮 Игра</div>
-        <div class="nav-item" data-page="promo">🏷️ Промокод</div>
-        <div class="nav-item" data-page="profile">👤 Профиль</div>
+        <div class="nav-item active" data-page="game"><span class="icon">🎮</span>Игра</div>
+        <div class="nav-item" data-page="promo"><span class="icon">🏷️</span>Промокод</div>
+        <div class="nav-item" data-page="profile"><span class="icon">👤</span>Профиль</div>
     </div>
 
-    <!-- ПРОМОКОД -->
     <div id="page-promo" style="display:none;padding:16px 20px;max-width:420px;margin:0 auto;">
         <h2 style="color:#00ff88;margin-bottom:16px;">🏷️ Промокод</h2>
         <div class="promo-input">
@@ -600,11 +464,9 @@
         </div>
     </div>
 
-    <!-- ПРОФИЛЬ -->
     <div id="page-profile" style="display:none;padding:16px 20px;max-width:420px;margin:0 auto;">
         <h2 style="color:#00ff88;margin-bottom:16px;">👤 Профиль</h2>
         
-        <!-- TON Connect -->
         <div class="wallet-section">
             <div class="title">🔗 Подключение кошелька</div>
             <button class="wallet-btn" id="wallet-connect-btn" onclick="connectWallet()">
@@ -633,14 +495,12 @@
         </div>
         <button class="deposit-btn" onclick="deposit()">💳 Пополнить</button>
         <button class="withdraw-btn" onclick="withdraw()">💳 Вывод средств</button>
-        <div style="margin-top:12px;font-size:12px;opacity:0.4;text-align:center;">
-            💰 Вывод от 1000⭐ | Комиссия 0.5%
-        </div>
+        <div style="margin-top:12px;font-size:12px;opacity:0.4;text-align:center;">💰 Вывод от 1000⭐ | Комиссия 0.5%</div>
     </div>
 
     <script>
         // ============================================================
-        // 1. ІНІЦІАЛІЗАЦІЯ TELEGRAM
+        // 1. TELEGRAM
         // ============================================================
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -652,12 +512,12 @@
         const USER_ID = urlParams.get('user_id') || '1';
 
         // ============================================================
-        // 3. API КЛЮЧ TON CENTER
+        // 3. API КЛЮЧ (ОТРИМАЙТЕ В @tonapibot)
         // ============================================================
         const TON_API_KEY = 'ee4d0b25213cab784373bbdadddbec49c9b3b600ffe7c60f285a16ad416e94a2';
 
         // ============================================================
-        // 4. СТАН ДОДАТКУ
+        // 4. СТАН
         // ============================================================
         let state = {
             balance: 0,
@@ -670,12 +530,47 @@
             wallet: null
         };
 
-        // ============================================================
-        // 5. TON CONNECT З API КЛЮЧЕМ
-        // ============================================================
         let tonConnector = null;
         let tonReady = false;
 
+        // ============================================================
+        // 5. ЗАВАНТАЖЕННЯ
+        // ============================================================
+        function loadData() {
+            const saved = localStorage.getItem(`cosmostars_${USER_ID}`);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    state = { ...state, ...data };
+                } catch(e) {}
+            }
+            state.balance = tg.initDataUnsafe?.user?.stars || 0;
+            updateUI();
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+            initWheel();
+            
+            // Завантажуємо TON Connect без блокування
+            setTimeout(() => {
+                try {
+                    loadTonSDK().then(() => {
+                        initTonConnect();
+                    }).catch(() => {
+                        console.warn('⚠️ TON Connect не завантажився, але додаток працює');
+                    });
+                } catch(e) {
+                    console.warn('⚠️ TON Connect помилка:', e);
+                }
+            }, 1500);
+        }
+
+        function saveData() {
+            localStorage.setItem(`cosmostars_${USER_ID}`, JSON.stringify(state));
+        }
+
+        // ============================================================
+        // 6. TON CONNECT
+        // ============================================================
         function loadTonSDK() {
             return new Promise((resolve, reject) => {
                 if (window.TonConnectSDK) {
@@ -685,19 +580,24 @@
                 const script = document.createElement('script');
                 script.src = 'https://cdn.jsdelivr.net/npm/tonconnect-sdk@2.0.4/dist/tonconnect-sdk.min.js';
                 script.onload = () => resolve(window.TonConnectSDK);
-                script.onerror = reject;
+                script.onerror = () => reject(new Error('Failed to load TON Connect SDK'));
                 document.head.appendChild(script);
             });
         }
 
         async function initTonConnect() {
             try {
-                const SDK = await loadTonSDK();
+                const SDK = window.TonConnectSDK;
+                if (!SDK) {
+                    console.warn('⚠️ TON Connect SDK не знайдено');
+                    return;
+                }
                 tonConnector = new SDK.TonConnect({
                     manifestUrl: 'https://c14280210-jpg.github.io/cosmostar/tonconnect-manifest.json',
-                    tonApiKey: TON_API_KEY  // ← ВАШ API КЛЮЧ ВСТАВЛЕНО!
+                    tonApiKey: TON_API_KEY
                 });
                 tonReady = true;
+                console.log('✅ TON Connect готов');
                 
                 if (tonConnector.connected) {
                     const wallet = tonConnector.wallet;
@@ -707,24 +607,22 @@
                         updateUI();
                     }
                 }
-                console.log('✅ TON Connect готов');
             } catch (e) {
-                console.error('❌ TON Connect помилка:', e);
+                console.warn('⚠️ TON Connect помилка:', e);
                 tonReady = false;
             }
         }
 
         async function connectWallet() {
-            if (!tonReady) {
-                showResult('⏳', 'Загрузка TON Connect...', '');
-                await initTonConnect();
-                if (!tonReady) {
-                    showResult('❌', 'Ошибка загрузки', 'Проверьте API ключ');
-                    return;
-                }
-            }
-
             try {
+                if (!tonReady) {
+                    await initTonConnect();
+                    if (!tonReady) {
+                        showResult('❌', 'TON Connect недоступен', '');
+                        return;
+                    }
+                }
+
                 await tonConnector.connect({
                     bridgeUrl: 'https://bridge.tonapi.io/bridge',
                     universalLink: 'https://app.tonkeeper.com/ton-connect',
@@ -744,31 +642,8 @@
         }
 
         // ============================================================
-        // 6. ОСНОВНІ ФУНКЦІЇ
+        // 7. ОНОВЛЕННЯ UI
         // ============================================================
-        function loadData() {
-            const saved = localStorage.getItem(`cosmostars_${USER_ID}`);
-            if (saved) {
-                try {
-                    const data = JSON.parse(saved);
-                    state = { ...state, ...data };
-                } catch(e) {}
-            }
-            state.balance = tg.initDataUnsafe?.user?.stars || 0;
-            updateUI();
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-            initWheel();
-            
-            setTimeout(() => {
-                initTonConnect();
-            }, 1000);
-        }
-
-        function saveData() {
-            localStorage.setItem(`cosmostars_${USER_ID}`, JSON.stringify(state));
-        }
-
         function updateUI() {
             document.getElementById('balance').textContent = state.balance;
             document.getElementById('free-spins').textContent = state.freeSpins;
@@ -807,7 +682,7 @@
         }
 
         // ============================================================
-        // 7. ПИТОМЦЫ
+        // 8. ПИТОМЦЫ
         // ============================================================
         const PETS = [
             { name: '🐹 Метеоритный Хомяк', price: 320, bonus: 12 },
@@ -849,7 +724,7 @@
         }
 
         // ============================================================
-        // 8. СЛОТИ
+        // 9. СЛОТИ
         // ============================================================
         function playSlot(bet) {
             if (state.isSpinning) return;
@@ -936,7 +811,7 @@
         }
 
         // ============================================================
-        // 9. КУБИК
+        // 10. КУБИК
         // ============================================================
         function playDice(bet) {
             if (state.isSpinning) return;
@@ -991,7 +866,7 @@
         }
 
         // ============================================================
-        // 10. КОЛЕСО
+        // 11. КОЛЕСО
         // ============================================================
         function initWheel() {
             const wheel = document.getElementById('wheel');
@@ -1056,7 +931,7 @@
         }
 
         // ============================================================
-        // 11. ВЫВОД И ПОПОЛНЕНИЕ
+        // 12. ВЫВОД И ПОПОЛНЕНИЕ
         // ============================================================
         function withdraw() {
             if (state.balance < 1000) {
@@ -1089,7 +964,7 @@
         }
 
         // ============================================================
-        // 12. ПРОМОКОД
+        // 13. ПРОМОКОД
         // ============================================================
         function usePromo() {
             const input = document.getElementById('promo-input');
@@ -1143,7 +1018,7 @@
         }
 
         // ============================================================
-        // 13. РЕЗУЛЬТАТ
+        // 14. РЕЗУЛЬТАТ
         // ============================================================
         function showResult(emoji, status, amount) {
             const box = document.getElementById('result-box');
@@ -1161,7 +1036,7 @@
         }
 
         // ============================================================
-        // 14. НАВИГАЦИЯ
+        // 15. НАВИГАЦИЯ
         // ============================================================
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -1183,7 +1058,7 @@
         });
 
         // ============================================================
-        // 15. ОБРОБКА ПОВІДОМЛЕНЬ ВІД БОТА
+        // 16. ОБРОБКА ПОВІДОМЛЕНЬ ВІД БОТА
         // ============================================================
         tg.onEvent('message', (msg) => {
             try {
@@ -1202,7 +1077,7 @@
         });
 
         // ============================================================
-        // 16. ЗАПУСК
+        // 17. ЗАПУСК
         // ============================================================
         loadData();
     </script>
