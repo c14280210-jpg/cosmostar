@@ -7,8 +7,15 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; padding-bottom: 80px; }
-        .container { max-width: 420px; margin: 0 auto; padding: 16px; }
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: 80px;
+        }
+        .container { max-width: 420px; margin: 0 auto; }
         
         .header {
             display: flex;
@@ -30,7 +37,7 @@
             border: 1px solid rgba(0, 255, 136, 0.2);
             cursor: pointer;
         }
-        .wallet-status.disconnected { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.2); background: rgba(255, 107, 107, 0.1); }
+        .wallet-status.disconnected { color: #ff6b6b; border-color: rgba(255,107,107,0.2); background: rgba(255,107,107,0.1); }
         
         .tabs {
             display: grid;
@@ -41,15 +48,15 @@
         .tab {
             padding: 10px 4px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
             border-radius: 12px;
             cursor: pointer;
             font-size: 11px;
             color: #666;
             transition: all 0.3s;
         }
-        .tab.active { background: rgba(0, 255, 136, 0.12); border-color: #00ff88; color: #00ff88; }
+        .tab.active { background: rgba(0,255,136,0.12); border-color: #00ff88; color: #00ff88; }
         .tab .icon { font-size: 20px; display: block; margin-bottom: 2px; }
         
         .page { display: none; animation: fadeIn 0.3s; }
@@ -57,8 +64,8 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         #slot-machine {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
@@ -74,8 +81,8 @@
         .reel {
             width: 60px;
             height: 70px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,136,0.2);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -89,9 +96,9 @@
             width: 100%;
             padding: 14px 16px;
             margin-bottom: 10px;
-            border: 1px solid rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0,255,136,0.15);
             border-radius: 12px;
-            background: rgba(0, 255, 136, 0.04);
+            background: rgba(0,255,136,0.04);
             color: #fff;
             font-size: 15px;
             font-weight: 600;
@@ -101,24 +108,23 @@
             align-items: center;
             transition: all 0.15s;
         }
-        .game-btn:active { transform: scale(0.97); background: rgba(0, 255, 136, 0.08); }
+        .game-btn:active { transform: scale(0.97); background: rgba(0,255,136,0.08); }
         .game-btn .info { font-size: 12px; opacity: 0.6; }
         .game-btn .info .win { color: #00ff88; }
         .game-btn .info .chance { color: #ff6b6b; }
-        .game-btn.free { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
+        .game-btn.free { border-color: #00ff88; background: rgba(0,255,136,0.08); }
         
         .dice-display {
             font-size: 80px;
             text-align: center;
             padding: 30px;
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 16px;
             margin-bottom: 8px;
-            transition: all 0.3s;
         }
         .dice-display.rolling { animation: rollDice 0.08s infinite; }
-        @keyframes rollDice { 0% { transform: rotate(0deg) scale(1); } 100% { transform: rotate(360deg) scale(1.05); } }
+        @keyframes rollDice { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .dice-result { text-align: center; opacity: 0.7; margin-bottom: 12px; font-size: 14px; }
         
         .wheel-container {
@@ -155,8 +161,8 @@
         #wheel-result { text-align: center; opacity: 0.7; margin-bottom: 12px; font-size: 14px; }
         
         .pet-card {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 12px;
             padding: 14px 16px;
             margin-bottom: 10px;
@@ -179,8 +185,8 @@
         .result-box {
             margin-top: 16px;
             padding: 16px;
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 12px;
             text-align: center;
             display: none;
@@ -197,8 +203,8 @@
             margin-top: 12px;
         }
         .stat-item {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.05);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.05);
             padding: 12px;
             border-radius: 12px;
             text-align: center;
@@ -214,9 +220,9 @@
             display: flex;
             justify-content: space-around;
             padding: 12px 16px 20px;
-            background: rgba(10, 10, 10, 0.95);
+            background: rgba(10,10,10,0.95);
             backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0, 255, 136, 0.08);
+            border-top: 1px solid rgba(0,255,136,0.08);
             z-index: 100;
         }
         .nav-item {
@@ -230,11 +236,11 @@
             text-align: center;
         }
         .nav-item .icon { font-size: 20px; display: block; }
-        .nav-item.active { color: #00ff88; background: rgba(0, 255, 136, 0.08); }
+        .nav-item.active { color: #00ff88; background: rgba(0,255,136,0.08); }
         
         .wallet-section {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
@@ -243,9 +249,9 @@
         .wallet-btn {
             width: 100%;
             padding: 14px;
-            border: 1px solid rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0,255,136,0.2);
             border-radius: 12px;
-            background: rgba(0, 255, 136, 0.04);
+            background: rgba(0,255,136,0.04);
             color: #00ff88;
             font-size: 16px;
             font-weight: 700;
@@ -254,7 +260,7 @@
             transition: all 0.15s;
         }
         .wallet-btn:active { transform: scale(0.98); }
-        .wallet-btn.connected { border-color: #00ff88; background: rgba(0, 255, 136, 0.08); }
+        .wallet-btn.connected { border-color: #00ff88; background: rgba(0,255,136,0.08); }
         .wallet-btn .sub { font-size: 12px; font-weight: 400; opacity: 0.6; display: block; }
         .wallet-address {
             font-size: 12px;
@@ -270,8 +276,8 @@
         .profile-card {
             text-align: center;
             padding: 20px;
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.08);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.08);
             border-radius: 16px;
             margin-bottom: 16px;
         }
@@ -286,8 +292,8 @@
             margin-bottom: 16px;
         }
         .profile-stats div {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.05);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.05);
             padding: 12px;
             border-radius: 12px;
             text-align: center;
@@ -296,8 +302,8 @@
         .profile-stats .label { font-size: 11px; opacity: 0.5; }
         
         .profile-info {
-            background: rgba(0, 255, 136, 0.04);
-            border: 1px solid rgba(0, 255, 136, 0.05);
+            background: rgba(0,255,136,0.04);
+            border: 1px solid rgba(0,255,136,0.05);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 16px;
@@ -306,7 +312,7 @@
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
         }
         .profile-info div:last-child { border-bottom: none; }
         
@@ -323,7 +329,7 @@
         }
         .withdraw-btn:active, .deposit-btn:active { transform: scale(0.98); }
         .withdraw-btn { background: #00ff88; color: #000; }
-        .deposit-btn { background: rgba(0, 255, 136, 0.15); border: 1px solid rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .deposit-btn { background: rgba(0,255,136,0.15); border: 1px solid rgba(0,255,136,0.2); color: #00ff88; }
         
         .promo-input {
             display: flex;
@@ -333,9 +339,9 @@
         .promo-input input {
             flex: 1;
             padding: 14px;
-            border: 1px solid rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0,255,136,0.15);
             border-radius: 12px;
-            background: rgba(0, 255, 136, 0.04);
+            background: rgba(0,255,136,0.04);
             color: #fff;
             font-size: 16px;
             outline: none;
@@ -366,7 +372,7 @@
         .loader {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(0, 255, 136, 0.1);
+            border: 3px solid rgba(0,255,136,0.1);
             border-top: 3px solid #00ff88;
             border-radius: 50%;
             animation: loaderSpin 1s linear infinite;
@@ -512,7 +518,7 @@
         const USER_ID = urlParams.get('user_id') || '1';
 
         // ============================================================
-        // 3. API КЛЮЧ (ОТРИМАЙТЕ В @tonapibot)
+        // 3. API КЛЮЧ (ТЕСТОВИЙ)
         // ============================================================
         const TON_API_KEY = 'ee4d0b25213cab784373bbdadddbec49c9b3b600ffe7c60f285a16ad416e94a2';
 
@@ -556,7 +562,7 @@
                     loadTonSDK().then(() => {
                         initTonConnect();
                     }).catch(() => {
-                        console.warn('⚠️ TON Connect не завантажився, але додаток працює');
+                        console.warn('⚠️ TON Connect не завантажився');
                     });
                 } catch(e) {
                     console.warn('⚠️ TON Connect помилка:', e);
